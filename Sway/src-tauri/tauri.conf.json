@@ -12,9 +12,9 @@
   "app": {
     "windows": [
       {
-        "title": "sway",
-        "width": 1400,
-        "height": 700
+        "title": "Sway",
+        "width": 1200,
+        "height": 800
       }
     ],
     "security": {
