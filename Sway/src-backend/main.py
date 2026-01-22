@@ -1,4 +1,4 @@
-from flask import Flask, jsonify , request
+from flask import Flask, jsonify , request, send_from_directory
 import os
 import json
 from datetime import datetime
@@ -137,6 +137,9 @@ def deleteSong(song_id):
         }), 200
     except Exception as e: # Obrabotvame greshkite
         return jsonify({"error": str(e)}), 500
+
+
+
 # Startirame Flask servera
 if __name__ == '__main__':
     app.run(port=8000, debug=True)

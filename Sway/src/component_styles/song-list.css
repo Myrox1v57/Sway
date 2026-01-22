@@ -2,13 +2,151 @@
     --font-family: 'Inter', sans-serif;
     --background-color: #ebf2f2;
 }
-.song-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background-color: var(--background-color);
-    font-family: var(--font-family);
-    margin: auto;
+.song-list-container {
+  padding-top: 100px;
+}
+
+.mini-player {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.mini-cover {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.mini-info {
+  flex: 1;
+  color: white;
+}
+
+.mini-info h4 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.mini-info p {
+  margin: 5px 0 0 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.mini-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.mini-controls button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.mini-controls button:hover:not(:disabled) {
+  background: white;
+  color: #667eea;
+  transform: scale(1.1);
+}
+
+.mini-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.song-item.playing {
+  background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%);
+  border-left: 4px solid #667eea;
+}
+
+.song-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px;
+  margin: 10px 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.song-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cover-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.song-details {
+  flex: 1;
+}
+
+.song-details h3 {
+  margin: 0 0 5px 0;
+  color: #333;
+}
+
+.song-details p {
+  margin: 3px 0;
+  color: #666;
+}
+
+.date-added {
+  font-size: 12px;
+  color: #999;
+}
+
+.song-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.play-btn,
+.delete-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.play-btn {
+  background: #667eea;
+  color: white;
+}
+
+.play-btn:hover {
+  background: #5568d3;
+}
+
+.delete-btn {
+  background: #ff4757;
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #ee384a;
 }
