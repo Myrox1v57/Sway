@@ -1,0 +1,14 @@
+:root {
+    --font-family: 'Inter', sans-serif;
+    --background-color: #ebf2f2;
+}
+.song-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: var(--background-color);
+    font-family: var(--font-family);
+    margin: auto;
+}

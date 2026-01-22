@@ -1,145 +1,161 @@
 import React, { useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
+import "../component_styles/song-form.css";
 
- function Form() {
-  const [formData, setFormData] = useState({
-    title: "",
-    artist: "",
+const Form = () => {
+  // Pravene na state obekt za form data
+  const[formData, setFormData] = useState({
+    title:"",
+    artist:"",
+    coverFile:null,
+    audioFile:null
   });
-  const [coverFile, setCoverFile] = useState(null);
-  const [songFile, setSongFile] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const [message, setMessage] = useState("");
+  // Pravene na state za cover preview i loading status
+  const [cover , setCover] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  // Funkciq za obrabotka na promenite v input poletata
+  const HandleInput = (e) => {
+    const {name, value} = e.target; // Destrukturirane na imeto i stoinostta na inputa
+    setFormData((prevData) => ({
+      ...prevData, // Zapazvane na predishnite danni
+      [name]: value // Aktualizirane na promenenoto pole
+    }));
   };
-
-  const handleCoverChange = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setCoverFile(file);
-    } else {
-      setMessage("Please select a valid image file");
-    }
-  };
-
-  const handleSongChange = (e) => {
-    const file = e.target.files[0];
-    if (file && (file.type.startsWith("audio/") || file.name.endsWith(".mp3") || file.name.endsWith(".wav"))) {
-      setSongFile(file);
-    } else {
-      setMessage("Please select a valid audio file");
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Funkciq za obrabotka na izbranite failove
+  const HandleFile = (e) => {
+    const {name, files} = e.target; // Destrukturirane na imeto i failovete ot inputa
+    const file = files[0]; // Vzimane na purviq fail ot spisaka
     
-    if (!formData.title || !formData.artist || !songFile) {
-      setMessage("Please fill all required fields and select a song file");
-      return;
+    // spriame ako faila e null
+    if(!file) return;
+
+    // Update na formData s izbranite failove
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: file
+    }));
+
+    // Ako e cover file, suzdavame preview za da vidim izbranata snimka
+    if(name === "coverFile" && file.type.startsWith("image/")) {
+      const reader = new FileReader(); // Sazdavane na FileReader obekt
+      reader.onloadend = () => {
+        setCover(reader.result); // Setvame cover state s rezultata ot FileReader
+      };
+      reader.readAsDataURL(file); // Chetene na faila kato Data URL
     }
+  };
 
-    setUploading(true);
-    setMessage("");
-
+  // Funkciq za obrabotka na submit na formata
+  const HandleSumbit = async (e) => {
+    e.preventDefault();
+    setLoading(true); // Setvame loading na true po vreme na izprashtaneto
+    
     try {
-      // Read files as base64
-      const songBuffer = await fileToBase64(songFile);
-      const coverBuffer = coverFile ? await fileToBase64(coverFile) : null;
+      //proverqvame dali vsichki poleta sa popylneni
+      if(!formData.title || !formData.artist || !formData.coverFile || !formData.audioFile) {
+      alert("Please fill all fields.");
+      setLoading(false);
+      return;
+      }
+      // pravim formData obekt za izprashtane
+      const data = new FormData();
+      data.append("title", formData.title);
+      data.append("artist", formData.artist);
+      data.append("cover", formData.coverFile);
+      data.append("song_file", formData.audioFile);
 
-      // Call Tauri backend command
-      const result = await invoke("save_song", {
-        title: formData.title,
-        artist: formData.artist,
-        songData: songBuffer,
-        songFileName: songFile.name,
-        coverData: coverBuffer,
-        coverFileName: coverFile ? coverFile.name : null,
+      // Izprashtame dannite kum backenda 
+      const response = await fetch("http://localhost:8000/add-song", {
+        method: "POST",
+        body: data // izprashtame formData kato tqlo na zayavkata
       });
+      // Proverqvame otgovora ot severa
+      if(!response.ok) {
+        throw new Error("HTTP error " + response.status);
+      }
+      // Obrabotvame uspeshniq otgovor
+      const result = await response.json();
+      console.log("Success:", result);
+      alert("Song added successfully!");
 
-      setMessage(`Success! ${result}`);
-      // Reset form
-      setFormData({ title: "", artist: "" });
-      setCoverFile(null);
-      setSongFile(null);
-      e.target.reset();
-    } catch (error) {
-      setMessage(`Error: ${error}`);
-    } finally {
-      setUploading(false);
+      // Resetvame formata sled uspeshno dobavqne
+      setFormData({
+        title:"",
+        artist:"",
+        coverFile:null,
+        audioFile:null
+      });
+      setCover(null);
+      e.target.reset(); // Resetvame formata v UI
+  
+    } catch (error) { // Obrabotvame greshkite
+      console.error("Error:", error);
+      alert("Failed to add song. Please try again.");
+    }finally {
+      setLoading(false); // Setvame loading na false sled zavurshvane na izprashtaneto
     }
-  };
-
-  const fileToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result.split(",")[1]);
-      reader.onerror = (error) => reject(error);
-    });
-  };
-
+  } 
+  // Vryshatme formata s vsichkite inputi i preview na cover snimkata
   return (
-    <div className="add-song-form" style={{ paddingLeft: 250, maxWidth: "500px", margin: "auto" }}>
+    <form onSubmit={HandleSumbit} className="add-song-form">
       <h2>Add New Song</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="title">Title *</label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
 
-        <div className="form-group">
-          <label htmlFor="artist">Artist *</label>
-          <input
-            type="text"
-            id="artist"
-            name="artist"
-            value={formData.artist}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
+      <div className="form-group">
+        <label htmlFor="title">Title:</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          value={formData.title}
+          onChange={HandleInput}
+          placeholder="Enter song title"
+          required
+        />
+      </div>
 
-        <div className="form-group">
-          <label htmlFor="cover">Cover Image (optional)</label>
-          <input
-            type="file"
-            id="cover"
-            accept="image/*"
-            onChange={handleCoverChange}
-          />
-          {coverFile && <p className="file-name">Selected: {coverFile.name}</p>}
-        </div>
+      <div className="form-group">
+        <label htmlFor="artist">Artist:</label>
+        <input
+          type="text"
+          id="artist"
+          name="artist"
+          value={formData.artist}
+          onChange={HandleInput}
+          placeholder="Enter artist name"
+          required
+        />
+      </div>
 
-        <div className="form-group">
-          <label htmlFor="song">Song File *</label>
-          <input
-            type="file"
-            id="song"
-            accept="audio/*,.mp3,.wav,.flac,.ogg"
-            onChange={handleSongChange}
-            required
-          />
-          {songFile && <p className="file-name">Selected: {songFile.name}</p>}
-        </div>
+      <div className="form-group">
+        <label htmlFor="coverFile">Cover Image:</label>
+        <input
+          type="file"
+          id="coverFile"
+          name="coverFile"
+          accept="image/*"
+          onChange={HandleFile}
+          required
+        />
+        {cover && <img src={cover} alt="Cover Preview" className="cover-preview" />}
+      </div>
 
-        <button type="submit" disabled={uploading}>
-          {uploading ? "Uploading..." : "Add Song"}
-        </button>
-
-        {message && <p className={message.startsWith("Success") ? "success" : "error"}>{message}</p>}
-      </form>
-    </div>
+      <div className="form-group">
+        <label htmlFor="audioFile">Audio File:</label>
+        <input
+          type="file"
+          id="audioFile"
+          name="audioFile"
+          accept="audio/*"
+          onChange={HandleFile}
+          required
+        />
+      </div>
+      
+      <button type="submit" disabled={loading}>
+        {loading ? "Adding..." : "Add Song"}
+      </button>
+    </form>
   );
-}
+};
+    
 export default Form;

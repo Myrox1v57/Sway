@@ -29,7 +29,7 @@
   flex-direction: column;
   border-right: 1px solid var(--border-color);
   padding: 1rem;
-    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 0 5px rgba(0, 0, 0, 0.2);
 }
 .nav-links {
   display: flex;
