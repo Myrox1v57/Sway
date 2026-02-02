@@ -1,8 +1,9 @@
-from flask import Flask, jsonify , request, send_from_directory
+from flask import Flask, jsonify , request, send_from_directory, Response, stream_with_context
 import os
 import json
 from datetime import datetime
 from werkzeug.utils import secure_filename
+import subprocess
 
 
 # Pravim Flask aplikaciq
@@ -116,7 +117,7 @@ def getSongs():
 # Iztrivame pesen po ID
 # Izpolzvame metoda DELETE
 # ID-to na pesenta se predava kato chast ot URL-a
-@app.route('/delete-song/<int:song_id>', methods=['DELETE'])
+@app.route('/delete-song/<float:song_id>', methods=['DELETE'])
 def deleteSong(song_id):
     try:
         db = load_database() # Zarejdame bazata danni
@@ -138,6 +139,131 @@ def deleteSong(song_id):
     except Exception as e: # Obrabotvame greshkite
         return jsonify({"error": str(e)}), 500
 
+# Streamvame pesen po ID
+# Izpolzvame metoda GET
+@app.route('/stream-song/<float:song_id>', methods=['GET'])
+def streamSong(song_id):
+    try:
+        db = load_database()  # Zarejdame bazata danni
+        song = next((s for s in db['songs'] if s['id'] == song_id), None)  # Namirame pesenta s dadenoto ID
+        if not song:  # Ako pesenta ne e namerena
+            return jsonify({"error": "Song not found."}), 404
+        
+       # Vzemame putq do pesenta
+        song_path = song['song_path']
+        
+        # Uverqvame se che putqt e tuk
+        if not os.path.isabs(song_path):
+            song_path = os.path.abspath(song_path)
+        
+        if not os.path.exists(song_path):
+            return jsonify({"error": f"Song file not found at: {song_path}"}), 404
+        
+        # Opredelqme razshirenieto na faila
+        file_ext = song_path.split('.')[-1].lower()
+        
+        # Opredelqme pravilniq MIME tip
+        mime_types = {
+            'mp3': 'audio/mpeg',
+            'wav': 'audio/wav',
+            'ogg': 'audio/ogg',
+            'flac': 'audio/flac',
+            'm4a': 'audio/mp4'
+        }
+        mime_type = mime_types.get(file_ext, 'audio/mpeg') # po default e audio/mpeg
+        
+        # Vzemame direktorijata i imeto na faila
+        directory = os.path.dirname(song_path)
+        filename = os.path.basename(song_path)
+        
+        # Izprashtame faila s pravilnite headers za streamvane
+        response = send_from_directory(
+            directory,
+            filename,
+            mimetype=mime_type, # opredelqme MIME tipa
+            as_attachment=False, # ne go izprashtame kato prilojenie za svalqvane
+            conditional=True # poddurjame byte range zahtevi
+        )
+        
+        # Dobavqme nujnite headers
+        response.headers['Access-Control-Allow-Origin'] = '*' # CORS header
+        response.headers['Accept-Ranges'] = 'bytes' # poddurjame byte range zahtevi
+        
+        return response
+        
+    except Exception as e:
+        print(f"Error streaming song: {str(e)}")  # Log error
+        return jsonify({"error": str(e)}), 500
+
+# Streamvame pesen po ID izpolzvaiki ffmpeg za konvertirane v realno vreme
+# Izpolzvame metoda GET
+@app.route('/stream-song-ffmpeg/<float:song_id>', methods=['GET'])
+def streamSongFfmpeg(song_id):
+    try:
+        db = load_database()  # Zarejdame bazata danni
+        song = next((s for s in db['songs'] if s['id'] == song_id), None)  # Namirame pesenta s dadenoto ID
+        if not song:  # Ako pesenta ne e namerena
+            return jsonify({"error": "Song not found."}), 404
+        
+        song_path = song['song_path']
+        
+        if not os.path.exists(song_path):
+            return jsonify({"error": "Song file not found."}), 404
+        
+        # Proverqvame dali ffmpeg e dostupen
+        try:
+            subprocess.run(['ffmpeg', '-version'], capture_output=True, check=True)
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            #  ffmpeg ne e dostupen, izprashtame originalniq fail
+            return send_from_directory(
+                os.path.dirname(song_path), # direktorijata
+                os.path.basename(song_path), # imeto na faila
+                mimetype='audio/mpeg'
+            )
+        
+        # Generator za streamvane na audio chasti
+        def generate():
+            # Komanda za ffmpeg za konvertirane na audio v mp3 format v realno vreme
+            command = [
+                'ffmpeg',
+                '-i', song_path,
+                '-f', 'mp3',
+                '-acodec', 'libmp3lame',
+                '-ab', '192k',
+                '-ar', '44100',
+                '-ac', '2',
+                '-'
+            ]
+            
+            process = subprocess.Popen(
+                command,
+                stdout=subprocess.PIPE, # izpolzvame stdout za da vzimame izhodnite danni
+                stderr=subprocess.DEVNULL, # ignorirame stderr
+                bufsize=8192 # buferen razmer
+            )
+            
+            try:
+                while True:
+                    chunk = process.stdout.read(8192) # chetem po 8192 bajta
+                    if not chunk:
+                        break
+                    yield chunk
+            finally:
+                process.terminate() # zavarshvame procesa
+                process.wait() # izchakvame procesa da se zavarshi
+        
+        return Response(
+            stream_with_context(generate()), # streamvame ot generatora
+            mimetype='audio/mpeg', # opredelqme MIME tip
+            headers={
+                'Content-Disposition': f'inline; filename="{song["song_name"]}"', # ime na faila
+                'Accept-Ranges': 'bytes', # poddurjame byte range zahtevi
+                'Cache-Control': 'no-cache', # bez keshirane
+                'Access-Control-Allow-Origin': '*' # CORS header
+            }
+        )
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 # Startirame Flask servera
