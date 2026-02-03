@@ -16,7 +16,4 @@ body {
   display: flex;
   background-color: var(--background-color);
 }
-.page {
-    padding-left: 250px;
-    height: 100vh;
-}
+

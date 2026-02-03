@@ -19,7 +19,7 @@
   border-bottom: 1px solid var(--sidenav-text-color);
 }
 .sidenav {
-  position: fixed;
+ min-width: var(--sidenav-width);
   width: var(--sidenav-width);
   height: 100vh;
   background-color: var(--sidenav-bg-color);
