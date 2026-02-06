@@ -14,14 +14,16 @@ function App() {
       <AudioPlayerProvider>
         <Router>
           <Sidenav />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/playlists" element={<div>Playlists</div>} />
-            <Route path="/songs" element={<SongList />} />
-            <Route path="/settings" element={<div>Settings</div>} />
-            <Route path="/add-song" element={<Form />} />
-          </Routes>
-          <MiniPlayer />
+          <div className="app-content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/playlists" element={<div>Playlists</div>} />
+              <Route path="/songs" element={<SongList />} />
+              <Route path="/settings" element={<div>Settings</div>} />
+              <Route path="/add-song" element={<Form />} />
+            </Routes>
+            <MiniPlayer />
+          </div>
         </Router>
       </AudioPlayerProvider>
     </div>

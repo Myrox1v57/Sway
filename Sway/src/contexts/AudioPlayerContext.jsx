@@ -61,7 +61,7 @@ export const AudioPlayerProvider = ({ children }) => {
         // Kogato pesenta svurshi da pusne sledvashta
         newAudio.addEventListener('ended', () => {
             setIsPlaying(false);
-            playNext();
+            autoNext(songId);
         });
 
         newAudio.src = streamUrl; // Zadavame src na noviq Audio obekt
@@ -108,18 +108,30 @@ export const AudioPlayerProvider = ({ children }) => {
         if (songs.length === 0) return;
 
         const currentIndex = songs.findIndex(song => song.id === currentPlayingId);
-        
-        if (currentIndex !== -1 && currentIndex < songs.length - 1) {
-            const nextSong = songs[currentIndex + 1];
-            setTimeout(() => {
-                playSong(nextSong.id);
-            }, 500);
+        let nextIndex;
+        if (currentIndex >= 0 && currentIndex < songs.length - 1) {
+            nextIndex = currentIndex + 1;
         } else {
-            // Vrashtame se kum purvata pesen
-            setTimeout(() => {
-                playSong(songs[0].id);
-            }, 500);
+            nextIndex = 0;
         }
+
+        playSong(songs[nextIndex].id);
+    };
+
+    // Avtomatichno puskane na sledvashta pesen kogato tekushtata svurshi
+    const autoNext = (endedSongId) => {
+        if (songs.length === 0) return;
+
+        const currentIndex = songs.findIndex(song => song.id === endedSongId);
+        if (currentIndex === -1) return;
+
+        if (currentIndex < songs.length - 1) {
+            playSong(songs[currentIndex + 1].id);
+            return;
+        }
+
+        // Spirame igraneto kogato stigne do poslednata pesen
+        stop();
     };
 
     // Puskane na predishnata pesen
@@ -127,13 +139,14 @@ export const AudioPlayerProvider = ({ children }) => {
         if (songs.length === 0) return;
 
         const currentIndex = songs.findIndex(song => song.id === currentPlayingId);
-        
+        let prevIndex;
         if (currentIndex > 0) {
-            playSong(songs[currentIndex - 1].id);
+            prevIndex = currentIndex - 1;
         } else {
-            // Otidi na poslendata pesen
-            playSong(songs[songs.length - 1].id);
+            prevIndex = songs.length - 1;
         }
+
+        playSong(songs[prevIndex].id);
     };
 
     // Spirane na igraneto

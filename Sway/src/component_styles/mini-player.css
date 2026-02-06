@@ -1,19 +1,10 @@
-:root {
-    --sidenav-bg-color: #dee9ea;
-    --sidenav-text-color: #000;
-    --sidenav-hover-bg-color: #8d9495;
-    --sidenav-active-bg-color: #c8d2d3;
-    --font-family: 'Inter', sans-serif;
-    --title-font-family: 'Open Sans', sans-serif;
-    --border-color: #c8d2d3;
-  }
 
 .mini-player {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: var(--border-color);
+    background-color: #0f0f0f;
     padding: 15px 20px;
     display: flex;
     align-items: center;
@@ -42,7 +33,7 @@
 
 .mini-info {
     flex: 1;
-    color:black;
+    color: var(--text-color);
     min-width: 0;
 }
 
@@ -107,7 +98,10 @@
     color: black;
 }
 
+/* Adjust add button position when mini player is active */
+
 /* Add padding to body to prevent content from being hidden behind mini player */
 body {
-    padding-bottom: 90px;
+    padding-bottom: 80px;
+    background-color: var(--background-color);
 }

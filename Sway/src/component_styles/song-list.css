@@ -1,18 +1,17 @@
-:root {
-    --font-family: 'Inter', sans-serif;
-    --background-color: #ebf2f2;
-}
+
 .song-list{
     display: flex;
+    width: 90%;
+    margin: -20px auto;
     flex-direction: column;
     padding: 20px;
     background-color: var(--background-color);
     font-family: var(--font-family);
-    margin: auto;
     height: 100vh;
+
     h2 {
         text-align: center;
-        color: #333;
+        color: var(--text-color);
     }
 
 }
@@ -20,65 +19,40 @@ ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
-    gap: 15px;
-    width: 100vh; 
-    li {
-       width: 100%;
-    }
 }
 
 .song-item {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 15px;
-  margin: 10px 0;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
+    display: flex;
+    padding: 5px 15px;
+    align-items: center;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    cursor: pointer;
 
+   
+}
 .song-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background-color: var(--hover-color);
 }
-
+.song-details {
+    margin-left: 15px;
+    display: flex;
+    gap: 5px;
+}
 .cover-image {
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
+  width: 50px;
+  height: 50px;
   object-fit: cover;
 }
-
-.song-details {
-  flex: 1;
+.artist {
+    font-weight: 600;
+    color: var(--secondory-text-color);
+}
+.title {
+    font-weight: 600;
+    color: var(--text-color);
+}
+.separator {
+    color: var(--secondory-text-color);
 }
 
-.song-details h3 {
-  margin: 0 0 5px 0;
-  color: #333;
-}
-
-.song-details p {
-  margin: 3px 0;
-  color: #666;
-}
-
-
-
-.song-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.play-button {
-  background: #000000;
-  border: none;
-  color: white;
-  padding: 10px 15px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.3s ease;
-}

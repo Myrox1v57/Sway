@@ -1,19 +1,38 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 :root {
-  --font-family: 'Inter', sans-serif;
-  --background-color: #f5f8f9;
+  --sidenav-width:  50px;
+  --sidenav-bg-color: #1a1a1a;
+  --sidenav-text-color: #dadada;
+  --sidenav-hover-bg-color: #3b3b3b;
+  --sidenav-active-bg-color: #515151;
+  --title-font-family: 'Inter', sans-serif;
+  --font-family: 'Open Sans', sans-serif;
+  --border-color: #1a1a1a;
+  --hover-color: #3b3b3b;
+  --item-bg-color: #cac7c7;
+  --text-color: #dadada;
+  --secondory-text-color: #595959;
+  --background-color: #252525;
 }
 
 body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: var(--font-family);
+  font-family: var(--title-font-family);
  
 
 }
 .App {
   display: flex;
+  width: 100%;
   background-color: var(--background-color);
+
+}
+
+.app-content {
+  margin-left: calc(var(--sidenav-width) + 20px);
+  width: 100%;
+  min-height: 100vh;
 }
 

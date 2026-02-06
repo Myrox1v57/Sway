@@ -38,8 +38,11 @@ const SongList = () => {
             <li key={song.id} className="song-item">
                 <img src={`../../src-backend/${song.cover_path}`} alt={`${song.title} cover`} className="cover-image"/>
                 <div className="song-details">
-                    <h3>{song.title}</h3>
-                    <p>{song.artist}</p>
+                    <p className="separator">-</p>
+                    <p className="artist">{song.artist}</p>
+                    <p className="separator">·</p>
+                    <p className="title">{song.title}</p>
+                    
                     <button 
                         onClick={() => togglePlayPause(song.id)}
                         className="play-button"
