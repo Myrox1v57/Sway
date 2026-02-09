@@ -4,6 +4,8 @@ import json
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import subprocess
+from mutagen import File 
+
 
 
 # Pravim Flask aplikaciq
@@ -43,16 +45,22 @@ def save_database(database):
     with open(DATABASE_FILE, 'w') as f:# otvarqme faila za zapisvane
         json.dump(database, f, indent=4) # zapisvame bazata danni kato json v faila s otdelenie ot 4 space-a
 
+
+
 # Pravim route za dobavqne na nova pesen
 # Izpolzvame metoda POST
 @app.route('/add-song', methods=['POST'])
 def addSong():
     try:
+        
+
         # Vzemame dannite ot form
         title = request.form.get('title')
         artist = request.form.get('artist')
         cover = request.files.get('cover')
         song_file = request.files.get('song_file')
+
+       
 
         # Proverqvame dali vsichki danni sa dadeni
         if not title or not artist: #za inputite title i artist
@@ -76,12 +84,23 @@ def addSong():
         songName = secure_filename(f"{timestamp}_{song_file.filename}")
 
         # Zapazvame file-ovete v papkite
-
         coverPath = os.path.join(UPLOAD_FOLDER_COVERS, coverName)
         songPath = os.path.join(UPLOAD_FOLDER_SONGS, songName)
 
         cover.save(coverPath)
         song_file.save(songPath)
+
+        # Vzemame duraciqta na pesenta v sekundite
+        def get_duration(file_path):
+            try:
+                audio = File(file_path)
+                if audio and audio.info:
+                    return int(audio.info.length) # vurni duraciqta v sekundite
+            except Exception as e:
+                print(f"Error getting duration for {file_path}: {str(e)}")
+            return 0
+        
+        
 
         # Pravim Obekt za novata pesen
         new_song = {
@@ -92,8 +111,11 @@ def addSong():
             "song_path": songPath,
             "cover_name": coverName,
             "song_name": songName,
+            "duration":  get_duration(songPath),
             "date_added": datetime.now().isoformat()
         }
+        
+
         # Zarejdame bazata danni
         db = load_database()
         
@@ -106,6 +128,7 @@ def addSong():
         }),201
     except Exception as e: # Obrabotvame greshkite
         return jsonify({"error": str(e)}), 500
+
 # Vzemame vsichki pesni
 @app.route('/get-songs', methods=['GET'])
 def getSongs():
@@ -264,6 +287,8 @@ def streamSongFfmpeg(song_id):
         )
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
 
 
 # Startirame Flask servera

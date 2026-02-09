@@ -1,10 +1,10 @@
-# 🎵 Sway - Desktop Music Player
+# Sway - Desktop Music Player
 
 A modern, cross-platform desktop music player built with Tauri, React, and Flask. Manage your local music library with an elegant interface, automatic queue playback, and seamless song management.
 
 ![Version](https://img.shields.io/badge/version-0.1.0-blue) ![License](https://img.shields.io/badge/license-MIT-green)
 
-## ✨ Features
+## Features
 
 - **Music Library Management** - Add, view, and organize your songs
 - **Album Cover Support** - Display beautiful cover art for each track
@@ -15,7 +15,7 @@ A modern, cross-platform desktop music player built with Tauri, React, and Flask
 - **Cross-Platform** - Works on Linux, Windows, and macOS
 - **Easy Management** - Delete songs directly from the interface
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 ### Frontend
 - **React 19.1.0** - Modern UI framework
@@ -37,7 +37,7 @@ A modern, cross-platform desktop music player built with Tauri, React, and Flask
 - **JSON** - Database for song metadata
 - **FormData API** - File uploads
 
-## 📋 Prerequisites
+## Prerequisites
 
 Before running this project, ensure you have:
 
