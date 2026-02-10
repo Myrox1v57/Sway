@@ -16,6 +16,7 @@ export const AudioPlayerProvider = ({ children }) => {
     const [currentPlayingId, setCurrentPlayingId] = useState(null);
     const [currentSong, setCurrentSong] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [currentTime, setCurrentTime] = useState(0);
     const audioRef = useRef(null);
 
     // Zarejdame pesnite pri start
@@ -25,6 +26,18 @@ export const AudioPlayerProvider = ({ children }) => {
             .then((data) => setSongs(data.songs))
             .catch((error) => console.error("Error fetching songs:", error));
     }, []);
+
+    // Aktualizirame tekushtoto vreme na pesenta, dokato se igra
+    useEffect(() => {
+        const updateTime = () => {
+            if (audioRef.current && isPlaying) {
+                setCurrentTime(audioRef.current.currentTime);
+            }
+        };
+
+        const interval = setInterval(updateTime, 100); // Update every 100ms
+        return () => clearInterval(interval);
+    }, [isPlaying]);
 
     // Aktualizirame currentSong kogato currentPlayingId se promeni
     useEffect(() => {
@@ -168,17 +181,27 @@ export const AudioPlayerProvider = ({ children }) => {
             .catch((error) => console.error("Error fetching songs:", error));
     };
 
+    // funkciq za tursene na vreme v pesenta
+    const seekToTime = (time) => {
+        if (audioRef.current) {
+            audioRef.current.currentTime = time;
+            setCurrentTime(time);
+        }
+    };
+
     const value = {
         songs,
         currentPlayingId,
         currentSong,
         isPlaying,
+        currentTime,
         playSong,
         togglePlayPause,
         playNext,
         playPrevious,
         stop,
         refreshSongs,
+        seekToTime,
         setSongs
     };
 

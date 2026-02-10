@@ -42,6 +42,7 @@ const SongList = () => {
                     <p className="artist">{song.artist}</p>
                     <p className="separator">·</p>
                     <p className="title">{song.title}</p>
+                    <p className="duration">{Math.floor(song.duration / 60)}:{("0" + (song.duration % 60)).slice(-2)}</p>
                     
                     <button 
                         onClick={() => togglePlayPause(song.id)}
