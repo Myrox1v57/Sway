@@ -17,6 +17,9 @@ export const AudioPlayerProvider = ({ children }) => {
     const [currentSong, setCurrentSong] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
+    const [volume, setVolume] = useState(1);
+    const [isMuted, setIsMuted] = useState(false);
+    const [previousVolume, setPreviousVolume] = useState(1);
     const audioRef = useRef(null);
 
     // Zarejdame pesnite pri start
@@ -39,6 +42,13 @@ export const AudioPlayerProvider = ({ children }) => {
         return () => clearInterval(interval);
     }, [isPlaying]);
 
+    // Dobavqme da postavq volume i mute status na audio elementa, kogato se promenqt
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.volume = isMuted ? 0 : volume; // Ako e muted, postavqme volume na 0, inache na tekushtata stoynost
+        }
+    }, [volume, isMuted]);
+
     // Aktualizirame currentSong kogato currentPlayingId se promeni
     useEffect(() => {
         if (currentPlayingId && songs.length > 0) {
@@ -46,6 +56,8 @@ export const AudioPlayerProvider = ({ children }) => {
             setCurrentSong(song); // Aktualizirame currentSong
         }
     }, [currentPlayingId, songs]);
+
+    
 
     // funkciq za puskane na pesen
     const playSong = (songId) => {
@@ -188,6 +200,27 @@ export const AudioPlayerProvider = ({ children }) => {
             setCurrentTime(time);
         }
     };
+    const changeVolume = (newVolume) => {
+        const clampedVolume = Math.max(0, Math.min(1, newVolume)); // Ogranichavame volume mezhdu 0 i 1
+        setVolume(clampedVolume);
+        if (clampedVolume > 0) {
+            setIsMuted(false); // Ako volume e poveche ot 0, ne sme muted
+        }else {
+            setPreviousVolume(volume)
+            setIsMuted(true); // Ako volume e 0, sme muted
+        }
+    };
+
+    const toggleMute = () => {
+        if (isMuted) {
+            setIsMuted(false);
+            setVolume(previousVolume); // Vrashtame predishniq volume, kogato otmutvame
+        } else {
+            setPreviousVolume(volume); // Zapazvame tekushtiq volume, predi da mutvame
+            setIsMuted(true);
+            setVolume(0); // Postavqme volume na 0, kogato mutvame
+        }
+    };
 
     const value = {
         songs,
@@ -195,6 +228,10 @@ export const AudioPlayerProvider = ({ children }) => {
         currentSong,
         isPlaying,
         currentTime,
+        volume,
+        isMuted,
+        changeVolume,
+        toggleMute,
         playSong,
         togglePlayPause,
         playNext,
