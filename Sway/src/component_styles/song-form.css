@@ -7,5 +7,11 @@
     padding: 20px;
     background-color: var(--background-color);
     font-family: var(--font-family);
-    margin: auto;
+
+}
+.cover-preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    object-fit: cover;
 }

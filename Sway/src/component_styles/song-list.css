@@ -26,13 +26,16 @@ ul {
     padding: 5px 15px;
     align-items: center;
     border-radius: 8px;
-    transition: background-color 0.2s;
-    cursor: pointer;
+    transition: background-color 0.2s;  
 
    
 }
 .song-item:hover {
     background-color: var(--hover-color);
+    .controls{
+        display: flex;
+    
+    }
 }
 .song-details {
     margin-left: 15px;
@@ -44,6 +47,44 @@ ul {
   height: 50px;
   object-fit: cover;
 }
+.controls {
+    position: relative;
+    margin-top: 6px;
+    display: none;
+}
+.play-button {
+    background: var(--orange);
+    pointer-events: all;
+    border: none;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 100%;
+    cursor: pointer;
+    font-size: 11px;
+    width: 40px;
+    height: 40px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.delete-button {
+    background: none;
+    pointer-events: all;
+    border: none;
+    color: var(--secondory-text-color);
+    padding: 5px 10px;
+    border-radius: 100%;
+    cursor: pointer;
+    font-size: 11px;
+    width: 45px;
+    height: 45px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+}
 .artist {
     font-weight: 600;
     color: var(--secondory-text-color);
@@ -51,8 +92,12 @@ ul {
 .title {
     font-weight: 600;
     color: var(--text-color);
+    
 }
 .separator {
     color: var(--secondory-text-color);
 }
-
+.duration {
+    color: var(--text-color);
+    position: relative;
+}

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../component_styles/song-form.css";
 
+//TODO: 1. Syle the form
 const Form = () => {
   // Pravene na state obekt za form data
   const[formData, setFormData] = useState({
@@ -136,7 +137,6 @@ const Form = () => {
           onChange={HandleFile}
           required
         />
-        {cover && <img src={cover} alt="Cover Preview" className="cover-preview" />}
       </div>
 
       <div className="form-group">
@@ -154,6 +154,7 @@ const Form = () => {
       <button type="submit" disabled={loading}>
         {loading ? "Adding..." : "Add Song"}
       </button>
+      {cover && <img src={cover} alt="Cover Preview" className="cover-preview" />}
     </form>
   );
 };
