@@ -151,7 +151,7 @@ const Form = () => {
         />
       </div>
       
-      <button type="submit" disabled={loading}>
+      <button type="submit" disabled={loading} className="sumbit-button">
         {loading ? "Adding..." : "Add Song"}
       </button>
       {cover && <img src={cover} alt="Cover Preview" className="cover-preview" />}
