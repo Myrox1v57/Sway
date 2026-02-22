@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { useAudioPlayer } from "../contexts/AudioPlayerContext";
+import { useAudioPlayer } from "../../contexts/AudioPlayerContext";
 import "../component_styles/mini-player.css";
 
 const MiniPlayer = () => {

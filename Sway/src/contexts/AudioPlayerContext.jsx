@@ -1,4 +1,5 @@
 import React, { createContext, useState, useRef, useContext, useEffect } from 'react';
+import { sendNotification, isPermissionGranted, requestPermission } from '@tauri-apps/plugin-notification';
 
 const AudioPlayerContext = createContext(); // Sazdavame kontekst za audio pleara
 
@@ -21,6 +22,17 @@ export const AudioPlayerProvider = ({ children }) => {
     const [isMuted, setIsMuted] = useState(false); // State za statusa na mute (true - muted, false - ne e muted)
     const [previousVolume, setPreviousVolume] = useState(1); // State za zapazvane na predishniq volume, kogato se mutva, za da go vrashtame, kogato se otmutva
     const audioRef = useRef(null); // Ref za audio elementa, koeto ni pozvolqva da kontrolirame igraneto i da slushame za sobitiq
+
+    // Request notification permission on mount
+    useEffect(() => {
+        const requestPerm = async () => {
+            let permissionGranted = await isPermissionGranted();
+            if (!permissionGranted) {
+                await requestPermission();
+            }
+        };
+        requestPerm();
+    }, []);
 
     // Zarejdame pesnite pri start
     useEffect(() => {
@@ -84,8 +96,25 @@ export const AudioPlayerProvider = ({ children }) => {
         });
 
         // Kogato pesenta svurshi da pusne sledvashta
-        newAudio.addEventListener('ended', () => {
+        newAudio.addEventListener('ended', async () => {
             setIsPlaying(false);
+            
+            // Send notification when song ends (only if app is in background)
+            try {
+                if (document.hidden) {
+                    const permissionGranted = await isPermissionGranted();
+                    
+                    if (permissionGranted) {
+                        await sendNotification({
+                            title: 'Song Ended',
+                            body: `${song.title} - ${song.artist}`
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Notification error:', error);
+            }
+            
             autoNext(songId);
         });
 
