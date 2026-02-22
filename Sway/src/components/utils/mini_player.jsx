@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useAudioPlayer } from "../../contexts/AudioPlayerContext";
-import "../component_styles/mini-player.css";
+import "../../component_styles/mini-player.css";
 
 const MiniPlayer = () => {
     const { currentSong, isPlaying, togglePlayPause, playNext, playPrevious, currentTime, seekToTime, volume, isMuted, changeVolume, toggleMute } = useAudioPlayer();

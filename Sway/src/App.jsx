@@ -4,8 +4,8 @@ import "./App.css";
 import SongList from "./components/song_list.jsx";
 import Form from "./components/add_song_form.jsx";
 import Home from "./pages/home.jsx";
-import Sidenav from "./components/sidenav.jsx";
-import MiniPlayer from "./components/mini_player.jsx";
+import Sidenav from "./components/utils/sidenav.jsx";
+import MiniPlayer from "./components/utils/mini_player.jsx";
 import { AudioPlayerProvider } from "./contexts/AudioPlayerContext.jsx";
 
 function App() {

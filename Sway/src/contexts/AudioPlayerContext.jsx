@@ -101,7 +101,7 @@ export const AudioPlayerProvider = ({ children }) => {
             
             // Send notification when song ends (only if app is in background)
             try {
-                if (document.hidden) {
+                if (document.hidden && document.visibilityState === 'hidden') {
                     const permissionGranted = await isPermissionGranted();
                     
                     if (permissionGranted) {

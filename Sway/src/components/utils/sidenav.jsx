@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import "../component_styles/sidenav.css";
+import "../../component_styles/sidenav.css";
 
 export default function Sidenav() {
     return (
