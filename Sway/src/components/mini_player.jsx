@@ -10,6 +10,7 @@ const MiniPlayer = () => {
         return null; // Ne pokazvame mini player, ako nqma tekushta pesen
     }
 
+    // Funkciq za klikaneto na progress bar, koqto izchislyava novoto vreme i go setva chrez seekToTime
     const handleProgressClick = (e) => {
         const bar = e.currentTarget;
         const clickX = e.clientX - bar.getBoundingClientRect().left;
@@ -18,6 +19,7 @@ const MiniPlayer = () => {
         seekToTime(newTime);
     };
 
+    // Funkciq za promena na volume chrez slidera, koqto vika changeVolume s novata stoynost
     const handleVolumeChange = (e) => {
         const newVolume = parseFloat(e.target.value);
         changeVolume(newVolume);

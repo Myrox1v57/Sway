@@ -12,15 +12,15 @@ export const useAudioPlayer = () => {
 };
 // Provider komponenta za audio pleara
 export const AudioPlayerProvider = ({ children }) => {
-    const [songs, setSongs] = useState([]);
-    const [currentPlayingId, setCurrentPlayingId] = useState(null);
-    const [currentSong, setCurrentSong] = useState(null);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [currentTime, setCurrentTime] = useState(0);
-    const [volume, setVolume] = useState(1);
-    const [isMuted, setIsMuted] = useState(false);
-    const [previousVolume, setPreviousVolume] = useState(1);
-    const audioRef = useRef(null);
+    const [songs, setSongs] = useState([]);// Sazdavame state za spisuka s pesnite
+    const [currentPlayingId, setCurrentPlayingId] = useState(null); // State za ID-to na tekushtata pesen, koqto se igra
+    const [currentSong, setCurrentSong] = useState(null); // State za tekushtata pesen, koqto se igra (obekt s informaciq za pesenta)
+    const [isPlaying, setIsPlaying] = useState(false); // State za statusa na igrane (true - igra, false - ne igra)
+    const [currentTime, setCurrentTime] = useState(0); // State za tekushtoto vreme na pesenta, koeto se aktualizira dokato se igra
+    const [volume, setVolume] = useState(1); // State za tekushtiq volume (mezhdu 0 i 1)
+    const [isMuted, setIsMuted] = useState(false); // State za statusa na mute (true - muted, false - ne e muted)
+    const [previousVolume, setPreviousVolume] = useState(1); // State za zapazvane na predishniq volume, kogato se mutva, za da go vrashtame, kogato se otmutva
+    const audioRef = useRef(null); // Ref za audio elementa, koeto ni pozvolqva da kontrolirame igraneto i da slushame za sobitiq
 
     // Zarejdame pesnite pri start
     useEffect(() => {
