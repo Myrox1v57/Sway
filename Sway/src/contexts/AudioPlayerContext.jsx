@@ -1,6 +1,5 @@
 import React, { createContext, useState, useRef, useContext, useEffect } from 'react';
-import { sendNotification, isPermissionGranted, requestPermission } from '@tauri-apps/plugin-notification';
-
+import { initializeNotifications, notifySongChange, notifySongEnded } from '../components/utils/Notification';
 const AudioPlayerContext = createContext(); // Sazdavame kontekst za audio pleara
 
 // Hook za izpolzvane na audio pleara v komponenti
@@ -22,7 +21,7 @@ export const AudioPlayerProvider = ({ children }) => {
     const [isMuted, setIsMuted] = useState(false); // State za statusa na mute (true - muted, false - ne e muted)
     const [previousVolume, setPreviousVolume] = useState(1); // State za zapazvane na predishniq volume, kogato se mutva, za da go vrashtame, kogato se otmutva
     const audioRef = useRef(null); // Ref za audio elementa, koeto ni pozvolqva da kontrolirame igraneto i da slushame za sobitiq
-
+    const [isAppVisible, setIsAppVisible] = useState(true); // State za vidimostta na prilojenieto, koeto ni pozvolqva da reshavame dali da izprashtame notifikacii
     // Request notification permission on mount
     useEffect(() => {
         const requestPerm = async () => {
@@ -69,7 +68,30 @@ export const AudioPlayerProvider = ({ children }) => {
         }
     }, [currentPlayingId, songs]);
 
+    useEffect(() => {
+
+        initializeNotifications();
     
+    }, []);
+
+    useEffect(() => {
+    const handleVisibilityChange = () => {
+        setIsAppVisible(!document.hidden);
+    };
+    
+    const handleFocus = () => setIsAppVisible(true);
+    const handleBlur = () => setIsAppVisible(false);
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+    window.addEventListener('blur', handleBlur);
+    
+    return () => {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        window.removeEventListener('focus', handleFocus);
+        window.removeEventListener('blur', handleBlur);
+    };
+}, []);
 
     // funkciq za puskane na pesen
     const playSong = (songId) => {
@@ -99,21 +121,8 @@ export const AudioPlayerProvider = ({ children }) => {
         newAudio.addEventListener('ended', async () => {
             setIsPlaying(false);
             
-            // Send notification when song ends (only if app is in background)
-            try {
-                if (document.hidden && document.visibilityState === 'hidden') {
-                    const permissionGranted = await isPermissionGranted();
-                    
-                    if (permissionGranted) {
-                        await sendNotification({
-                            title: 'Song Ended',
-                            body: `${song.title} - ${song.artist}`
-                        });
-                    }
-                }
-            } catch (error) {
-                console.error('Notification error:', error);
-            }
+            // Izprashtame notifikaciq, ako dokumenta e skrit (use document.hidden for real-time check)
+            await notifySongEnded(song, !document.hidden);
             
             autoNext(songId);
         });
@@ -173,14 +182,17 @@ export const AudioPlayerProvider = ({ children }) => {
     };
 
     // Avtomatichno puskane na sledvashta pesen kogato tekushtata svurshi
-    const autoNext = (endedSongId) => {
+    const autoNext = async (endedSongId) => {
         if (songs.length === 0) return;
 
         const currentIndex = songs.findIndex(song => song.id === endedSongId);
         if (currentIndex === -1) return;
 
         if (currentIndex < songs.length - 1) {
-            playSong(songs[currentIndex + 1].id);
+            const nextSong = songs[currentIndex + 1];
+            playSong(nextSong.id);
+            // Send notification for next song if app is not visible
+            await notifySongChange(nextSong, !document.hidden);
             return;
         }
 
