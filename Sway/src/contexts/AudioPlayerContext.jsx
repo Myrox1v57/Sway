@@ -121,23 +121,8 @@ export const AudioPlayerProvider = ({ children }) => {
         newAudio.addEventListener('ended', async () => {
             setIsPlaying(false);
             
-<<<<<<< HEAD
             // Izprashtame notifikaciq, ako dokumenta e skrit (use document.hidden for real-time check)
             await notifySongEnded(song, !document.hidden);
-=======
-            // Send notification when song ends
-            try {
-                const permissionGranted = await isPermissionGranted();
-                if (permissionGranted) {
-                    await sendNotification({
-                        title: 'Song Ended',
-                        body: `${song.title} - ${song.artist}`
-                    });
-                }
-            } catch (error) {
-                console.error('Notification error:', error);
-            }
->>>>>>> refs/remotes/origin/main
             
             autoNext(songId);
         });
