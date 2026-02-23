@@ -6,8 +6,12 @@
   "permissions": [
     "core:default",
     "opener:default",
+<<<<<<< HEAD
     "notification:allow-is-permission-granted",
     "notification:allow-request-permission",
     "notification:allow-notify"
+=======
+    "notification:default"
+>>>>>>> refs/remotes/origin/main
   ]
 }
