@@ -99,17 +99,14 @@ export const AudioPlayerProvider = ({ children }) => {
         newAudio.addEventListener('ended', async () => {
             setIsPlaying(false);
             
-            // Send notification when song ends (only if app is in background)
+            // Send notification when song ends
             try {
-                if (document.hidden && document.visibilityState === 'hidden') {
-                    const permissionGranted = await isPermissionGranted();
-                    
-                    if (permissionGranted) {
-                        await sendNotification({
-                            title: 'Song Ended',
-                            body: `${song.title} - ${song.artist}`
-                        });
-                    }
+                const permissionGranted = await isPermissionGranted();
+                if (permissionGranted) {
+                    await sendNotification({
+                        title: 'Song Ended',
+                        body: `${song.title} - ${song.artist}`
+                    });
                 }
             } catch (error) {
                 console.error('Notification error:', error);
