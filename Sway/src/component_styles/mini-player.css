@@ -96,6 +96,11 @@
     transform: scale(0.95);
 }
 
+.mini-btn.active {
+    background: rgba(188, 188, 188, 0.3);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
 .mini-play-pause {
     background: rgba(255, 255, 255, 0.3);
     width: 55px;

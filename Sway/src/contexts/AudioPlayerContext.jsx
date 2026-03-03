@@ -22,6 +22,10 @@ export const AudioPlayerProvider = ({ children }) => {
     const [previousVolume, setPreviousVolume] = useState(1); // State za zapazvane na predishniq volume, kogato se mutva, za da go vrashtame, kogato se otmutva
     const audioRef = useRef(null); // Ref za audio elementa, koeto ni pozvolqva da kontrolirame igraneto i da slushame za sobitiq
     const [isAppVisible, setIsAppVisible] = useState(true); // State za vidimostta na prilojenieto, koeto ni pozvolqva da reshavame dali da izprashtame notifikacii
+    const [shuffle, setShuffle] = useState(false); // State za random igrane na pesnite
+    const [originalSongs, setOriginalSongs] = useState([]); // State za originalniq red na pesnite
+
+
     // Request notification permission on mount
     useEffect(() => {
         const requestPerm = async () => {
@@ -37,7 +41,10 @@ export const AudioPlayerProvider = ({ children }) => {
     useEffect(() => {
         fetch("http://localhost:8000/get-songs")
             .then((response) => response.json())
-            .then((data) => setSongs(data.songs))
+            .then((data) => {
+                setSongs(data.songs);
+                setOriginalSongs(data.songs); // Zapazvame originalniq red
+            })
             .catch((error) => console.error("Error fetching songs:", error));
     }, []);
 
@@ -170,20 +177,41 @@ export const AudioPlayerProvider = ({ children }) => {
     const playNext = () => {
         if (songs.length === 0) return;
 
-        const currentIndex = songs.findIndex(song => song.id === currentPlayingId);
-        let nextIndex;
-        if (currentIndex >= 0 && currentIndex < songs.length - 1) {
-            nextIndex = currentIndex + 1;
+        if (shuffle) {
+            // Ako shuffle e vkluchen, izbirame sluchayna pesen (razlichna ot tekushtata)
+            const availableSongs = songs.filter(song => song.id !== currentPlayingId);
+            if (availableSongs.length === 0) return;
+            const randomIndex = Math.floor(Math.random() * availableSongs.length);
+            playSong(availableSongs[randomIndex].id);
         } else {
-            nextIndex = 0;
+            const currentIndex = songs.findIndex(song => song.id === currentPlayingId);
+            let nextIndex;
+            if (currentIndex >= 0 && currentIndex < songs.length - 1) {
+                nextIndex = currentIndex + 1;
+            } else {
+                nextIndex = 0;
+            }
+            playSong(songs[nextIndex].id);
         }
-
-        playSong(songs[nextIndex].id);
     };
 
     // Avtomatichno puskane na sledvashta pesen kogato tekushtata svurshi
     const autoNext = async (endedSongId) => {
         if (songs.length === 0) return;
+
+        if (shuffle) {
+            // Ako shuffle e vkluchen, izbirame sluchayna pesen (razlichna ot tekushtata)
+            const availableSongs = songs.filter(song => song.id !== endedSongId);
+            if (availableSongs.length === 0) {
+                stop();
+                return;
+            }
+            const randomIndex = Math.floor(Math.random() * availableSongs.length);
+            const nextSong = availableSongs[randomIndex];
+            playSong(nextSong.id);
+            await notifySongChange(nextSong, !document.hidden);
+            return;
+        }
 
         const currentIndex = songs.findIndex(song => song.id === endedSongId);
         if (currentIndex === -1) return;
@@ -224,6 +252,10 @@ export const AudioPlayerProvider = ({ children }) => {
         setIsPlaying(false);
         setCurrentPlayingId(null);
         setCurrentSong(null);
+    };
+    // Funkciq za random igrane na pesnite
+    const toggleShuffle = () => {
+        setShuffle(prev => !prev);
     };
 
     // funkciq za obnovyavane na spisuka s pesnite
@@ -271,6 +303,7 @@ export const AudioPlayerProvider = ({ children }) => {
         currentTime,
         volume,
         isMuted,
+        shuffle,
         changeVolume,
         toggleMute,
         playSong,
@@ -280,7 +313,8 @@ export const AudioPlayerProvider = ({ children }) => {
         stop,
         refreshSongs,
         seekToTime,
-        setSongs
+        setSongs,
+        toggleShuffle
     };
 
     return (

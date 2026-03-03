@@ -4,7 +4,7 @@ import { useAudioPlayer } from "../../contexts/AudioPlayerContext";
 import "../../component_styles/mini-player.css";
 
 const MiniPlayer = () => {
-    const { currentSong, isPlaying, togglePlayPause, playNext, playPrevious, currentTime, seekToTime, volume, isMuted, changeVolume, toggleMute } = useAudioPlayer();
+    const { currentSong, isPlaying, togglePlayPause, playNext, playPrevious, currentTime, seekToTime, volume, isMuted, changeVolume, toggleMute, shuffle, toggleShuffle } = useAudioPlayer();
 
     if (!currentSong) {
         return null; // Ne pokazvame mini player, ako nqma tekushta pesen
@@ -32,19 +32,26 @@ const MiniPlayer = () => {
 
     return (
         <div className="mini-player">
+            
             <img 
                 src={`../../src-backend/${currentSong.cover_path}`} 
                 alt={`${currentSong.title} cover`} 
                 className="mini-cover"
             />
+            
             <div className="mini-info">
                 <h4>{currentSong.title}</h4>
                 <p>{currentSong.artist}</p>
+                
             </div>
+            
            
             
            
             <div className="mini-controls">
+                <button onClick={toggleShuffle} className={`mini-btn ${shuffle ? 'active' : ''}`} title="Shuffle">
+                   <svg width="800px" height="800px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg" aria-labelledby="shuffleIconTitle" stroke="#000000" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter" fill="none" color="#000000"> <title id="shuffleIconTitle">Shuffle</title> <path d="M21 16.0399H17.7707C15.8164 16.0399 13.9845 14.9697 12.8611 13.1716L10.7973 9.86831C9.67384 8.07022 7.84196 7 5.88762 7L3 7"/> <path d="M21 7H17.7707C15.8164 7 13.9845 8.18388 12.8611 10.1729L10.7973 13.8271C9.67384 15.8161 7.84196 17 5.88762 17L3 17"/> <path d="M19 4L22 7L19 10"/> <path d="M19 13L22 16L19 19"/> </svg>
+                </button>
                 <button onClick={playPrevious} className="mini-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000ff"><path d="M220-240v-480h80v480h-80Zm520 0L380-480l360-240v480Zm-80-240Zm0 90v-180l-136 90 136 90Z"/></svg>
                 </button>
@@ -66,6 +73,7 @@ const MiniPlayer = () => {
                 <span>{convertedTime}</span>
                 <span>{convertedDuration}</span>
             </div>
+            
                 <div className="volume-control">
                     <button onClick={toggleMute} className="volume-btn">
                         {isMuted || volume === 0 ? (
