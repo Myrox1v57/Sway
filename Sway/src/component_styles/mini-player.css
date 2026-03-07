@@ -131,7 +131,7 @@
 
 .progress-bar-fill {
     height: 100%;
-    background-color: #1c1d1c;
+    background-color: var(--orange-dark);
     border-radius: 2px;
     transition: width 0.05s linear;
 }
@@ -159,7 +159,7 @@
 .volume-btn {
     background: none;
     border: none;
-    color: var(--text-color);
+    color: var(--orange);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -168,7 +168,12 @@
 }
 
 .volume-btn:hover {
-    color: var(--secondory-text-color);
+    transform: scale(1.1);
+    transition: all 0.2s ease;
+}
+.volume-btn:active {
+    color: var(--orange-dark);
+    transform: scale(0.95);
 }
 
 .volume-slider {
@@ -176,7 +181,7 @@
     height: 4px;
     -webkit-appearance: none;
     appearance: none;
-    background: #333;
+    background: var(--hover-color);
     border-radius: 2px;
     outline: none;
     cursor: pointer;
@@ -187,7 +192,7 @@
     appearance: none;
     width: 12px;
     height: 12px;
-    background: var(--text-color);
+    background: var(--orange-dark);
     border-radius: 50%;
     cursor: pointer;
     transition: transform 0.2s ease;
@@ -200,7 +205,7 @@
 .volume-slider::-moz-range-thumb {
     width: 12px;
     height: 12px;
-    background: #1db954;
+    background: var(--orange-dark);
     border: none;
     border-radius: 50%;
     cursor: pointer;

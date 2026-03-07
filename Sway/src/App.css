@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 :root {
   --sidenav-width:  50px;
-  --sidenav-bg-color: #1a1a1a;
+  --sidenav-bg-color: linear-gradient(23deg, #1a1a1a, #0d0d0d);
   --sidenav-text-color: #dadada;
   --sidenav-hover-bg-color: #3b3b3b;
   --sidenav-active-bg-color: #515151;
@@ -12,9 +12,11 @@
   --item-bg-color: #cac7c7;
   --text-color: #dadada;
   --secondory-text-color: #595959;
-  --background-color: #252525;
+  --background-color: linear-gradient(150deg, #1a1a1a , #0d0d0d);
   --orange: #fd591b;
+  --orange-dark: #e04e17;
   --form-background-color: #3b3b3b;
+  --upload-area-bg-color: #2b2b2b;
 }
 
 body {
@@ -28,7 +30,7 @@ body {
 .App {
   display: flex;
   width: 100%;
-  background-color: var(--background-color);
+  background: var(--background-color);
 
 }
 
