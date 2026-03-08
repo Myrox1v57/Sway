@@ -38,14 +38,7 @@ const SongList = () => {
         <ul>
         {songs.map((song) => (
             <li key={song.id} className="song-item">
-                <img src={`../../src-backend/${song.cover_path}`} alt={`${song.title} cover`} className="cover-image"/>
-                <div className="song-details">
-                    <p className="separator">-</p>
-                    <p className="artist">{song.artist}</p>
-                    <p className="separator">·</p>
-                    <p className="title">{song.title}</p>
-                    
-                    <div className="controls">
+                <div className="controls">
                     <button 
                         onClick={() => togglePlayPause(song.id)}
                         className="play-button"
@@ -56,7 +49,16 @@ const SongList = () => {
                         <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000ff"><path d="M320-240v-480l360 240-360 240Zm80-240Zm0 90 136-90-136-90v180Z"/></svg>
                         )}
                     </button>
+                <img src={`../../src-backend/${song.cover_path}`} alt={`${song.title} cover`} className="cover-image"/>
                     </div>
+                
+                <div className="song-details">
+                    <p className="separator">-</p>
+                    <p className="artist">{song.artist}</p>
+                    <p className="separator">·</p>
+                    <p className="title">{song.title}</p>
+                    
+                    
                     <button 
                         onClick={() => deleteSong(song.id)}
                         className="delete-button"
