@@ -1,0 +1,121 @@
+/* Add Form Page Container */
+.add-form-page {
+    background: linear-gradient(150deg, #1a1a1a 0%, #0d0d0d 100%);
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+/* Back Button */
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid #2a2a2a;
+    color: #888;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    margin-bottom: 16px;
+}
+
+.back-button:hover {
+    background: #1a1a1a;
+    border-color: #3a3a3a;
+    color: var(--text-color);
+}
+
+/* Options Container */
+.add-options-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 48px);
+    gap: 48px;
+}
+
+.add-options-title {
+    color: var(--text-color);
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+}
+
+/* Buttons Container */
+.add-options-buttons {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Option Button */
+.add-option-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 180px;
+    height: 180px;
+    background: #151515;
+    border: 2px solid #2a2a2a;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-option-btn:hover {
+    background: #1a1a1a;
+    border-color: var(--border-color);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.add-option-btn .btn-icon {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--orange-dark) 0%, var(--orange-dark) 100%);
+    border-radius: 12px;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.add-option-btn .btn-icon svg {
+    width: 100%;
+    height: 100%;
+    stroke: white;
+}
+
+.add-option-btn span {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* Playlist placeholder */
+.playlist-form-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 100px);
+    color: var(--text-color);
+}
+
+.playlist-form-placeholder h2 {
+    font-size: 1.75rem;
+    margin-bottom: 12px;
+}
+
+.playlist-form-placeholder p {
+    color: #666;
+    font-size: 1rem;
+}

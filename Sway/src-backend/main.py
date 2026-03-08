@@ -24,6 +24,7 @@ app.config['DEBUG'] = True
 UPLOAD_FOLDER_COVERS = 'uploads/covers'
 UPLOAD_FOLDER_SONGS = 'uploads/songs'
 DATABASE_FILE = 'uploads/songs_database.json'
+PLAYLIST_FILE = 'uploads/playlist.json'
 ALLOWED_AUDIO_EXTENSIONS = {'mp3', 'wav'}
 ALLOWED_COVER_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
@@ -45,8 +46,14 @@ def save_database(database):
     with open(DATABASE_FILE, 'w') as f:# otvarqme faila za zapisvane
         json.dump(database, f, indent=4) # zapisvame bazata danni kato json v faila s otdelenie ot 4 space-a
 
-
-
+def load_playlist():
+    if os.path.exists(PLAYLIST_FILE): # ako faila sushtestvuva
+        with open(PLAYLIST_FILE, 'r') as f: # da go otvorem za chetene
+            return json.load(f) # da go vurnem kato json obekt
+    return {"playlist": []} # ako ne sushtestvuva, vurni prazna playlist
+def save_playlist(playlist):
+    with open(PLAYLIST_FILE, 'w') as f:# otvarqme faila za zapisvane
+        json.dump(playlist, f, indent=4) # zapisvame playlist-a kato json v faila s otdelenie ot 4 space-a
 # Pravim route za dobavqne na nova pesen
 # Izpolzvame metoda POST
 @app.route('/add-song', methods=['POST'])

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import SongList from "./components/song_list.jsx";
 import Form from "./components/add_song_form.jsx";
+import AddForm from "./pages/Add_Form.jsx";
 import Home from "./pages/home.jsx";
 import Sidenav from "./components/utils/sidenav.jsx";
 import MiniPlayer from "./components/utils/mini_player.jsx";
@@ -20,7 +21,7 @@ function App() {
               <Route path="/playlists" element={<div>Playlists</div>} />
               <Route path="/songs" element={<SongList />} />
               <Route path="/settings" element={<div>Settings</div>} />
-              <Route path="/add-song" element={<Form />} />
+              <Route path="/add-song" element={<AddForm />} />
             </Routes>
             <MiniPlayer />
           </div>
