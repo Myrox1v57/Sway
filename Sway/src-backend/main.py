@@ -288,9 +288,40 @@ def streamSongFfmpeg(song_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# ==================
+#==================
 # Playlist Management
 #===================
+
+@app.route('/create-playlist', methods=['POST'])
+def CreatPlaylist():
+    try:
+        timestamp = datetime.now().timestamp() # dobavqme timestamp za unikalnost
+        playlist_name = request.form.get('playlist_name') # Vzemame imeto na playlist-a ot formata
+        playlist_cover = request.files.get('playlist_cover') # Vzemame cover-a na playlist-a ot formata
+
+        playlist = {
+            "id": timestamp,
+            "name": playlist_name if playlist_name else "My Playlist", # Ako ne e dadeno ime, da se kazva "My Playlist"
+            "cover": playlist_cover,
+            "songs": []} # Sazdavame prazna playlist
+        save_playlist(playlist) # Zapazvame playlist-a
+        return jsonify({ # Vurni uspeshen otgovor
+            "success": True,
+            "message": "Playlist created successfully."
+        }), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+@app.route('/get-playlist', methods=['GET'])
+def getPlaylist():
+    try:
+        playlist = load_playlist() # Zarejdame playlist-a
+        return jsonify(playlist), 200 # Vurni playlist-a kato otgovor
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 def load_playlist():
     if os.path.exists(PLAYLIST_FILE): # ako faila sushtestvuva
         with open(PLAYLIST_FILE, 'r') as f: # da go otvorem za chetene
@@ -304,26 +335,6 @@ def save_playlist(playlist):
 
 # Pravim route za dobavqne na pesen kum playlist-a
 @app.route('/add-to-playlist/<float:song_id>', methods=['POST'])
-def AddPlayList():
-    timestamp = datetime.now().timestamp() # dobavqme timestamp za unikalnost na playlist-a
-        #Vzemame dannite ot forma
-    playlist_name = request.form.get('playlist_name', 'My Playlist') # vzemame imeto na playlist-a ot formata, po default e "My Playlist"
-    playlist_cover = request.files.get('playlist_cover') # vzemame cover-a za playlist-a ot formata
-    playlist_songs = request.form.getlist('playlist_songs') # vzemame spisuka s ID-ta na pesnite za playlist-a ot formata
-
-    coverPath = os.path.join(UPLOAD_FOLDER_COVERS, playlist_cover.filename) if playlist_cover else None
-    playlist_json = {
-            "id": timestamp, 
-            "name": playlist_name, 
-            "cover": playlist_cover.filename if playlist_cover else None,
-            "covr_path": coverPath,
-            "songs": playlist_songs
-        }
-    db = load_database() # Zarejdame bazata danni
-    db['playlists'] = db.get('playlists', []) # Vzemame spisuka s playlistite ot bazata danni, ako ne sushtestvuva, vurni prazna lista
-    db['playlists'].append(playlist_json) # Dobavqme noviq playlist kum bazata danni
-
-
 def addToPlaylist(song_id):
     try:
         

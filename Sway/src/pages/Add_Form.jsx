@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { AddPlaylistForm } from "../components/utils/add_playlist_form.jsx";
 import Form from "../components/add_song_form.jsx";
 import "../component_styles/add-form-page.css";
 
@@ -32,9 +33,7 @@ const AddForm = () => {
                     </svg>
                     Back
                 </button>
-                <div className="playlist-form-placeholder">
-                    <h2>Add Playlist</h2>
-                </div>
+                <AddPlaylistForm />
             </div>
         );
     }
