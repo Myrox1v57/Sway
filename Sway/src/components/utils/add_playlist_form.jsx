@@ -1,6 +1,6 @@
 import {useState } from "react";
 
-export const AddPlaylistForm = () => {
+export const AddPlaylistForm = ({ onSuccess }) => {
     const [formData, setFormData] = useState({
         playlist_name: "",
         playlist_cover: null,
@@ -17,8 +17,8 @@ export const AddPlaylistForm = () => {
         }));
     };
 
-    const handleSubmit = async (e) => {
-        const [name, files] = e.target;
+    const handleFileChange = (e) => {
+        const { name, files } = e.target;
         const file = files[0];
 
         if(!file) return;
@@ -30,8 +30,9 @@ export const AddPlaylistForm = () => {
         }));
     };
     
-    const HandleSumbit = async (e) => {
+    const HandleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         try {
             //proverqvame dali vsichki poleta sa popylneni
@@ -45,18 +46,33 @@ export const AddPlaylistForm = () => {
             data.append("playlist_name", formData.playlist_name);
             data.append("playlist_cover", formData.playlist_cover);
             
-            const response = await fetch("/api/playlists", {
+            const response = await fetch("http://localhost:8000/create-playlist", {
                 method: "POST",
                 body: data
             });
+            const result = await response.json();
+            if (response.ok) {
+                alert("Playlist added successfully!");
+                setFormData({
+                    playlist_name: "",
+                    playlist_cover: null,
+                    songs: []
+                });
+                e.target.reset(); // Resetvame formata v UI
+                if (onSuccess) onSuccess(); // Izvikame callback ako e daden
+            } else {
+                alert("Failed to add playlist: " + result.error);
+            }
+            setLoading(false);
         }
         catch (error) {
             console.error("Error adding playlist:", error);
+            setLoading(false);
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="add-playlist-form">
+        <form onSubmit={HandleSubmit} className="add-playlist-form">
             <div className="form-group">
                 <label htmlFor="playlist_name">Playlist Name:</label>
                 <input 
@@ -75,7 +91,7 @@ export const AddPlaylistForm = () => {
                     id="playlist_cover" 
                     name="playlist_cover" 
                     accept="image/*" 
-                    onChange={HandleSumbit} 
+                    onChange={handleFileChange} 
                     required
                 />
             </div>

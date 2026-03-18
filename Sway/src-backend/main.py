@@ -23,6 +23,7 @@ def add_cors_headers(response):
 app.config['DEBUG'] = True
 UPLOAD_FOLDER_COVERS = 'uploads/covers'
 UPLOAD_FOLDER_SONGS = 'uploads/songs'
+UPLOAD_FOLDER_PLAYLIST_COVERS = 'uploads/playlist_covers'
 DATABASE_FILE = 'uploads/songs_database.json'
 PLAYLIST_FILE = 'uploads/playlist.json'
 ALLOWED_AUDIO_EXTENSIONS = {'mp3', 'wav'}
@@ -31,6 +32,7 @@ ALLOWED_COVER_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 #Pravim papkite za zapazvane na failovete ako ne sushtestvivat
 os.makedirs(UPLOAD_FOLDER_COVERS, exist_ok=True)
 os.makedirs(UPLOAD_FOLDER_SONGS, exist_ok=True)
+os.makedirs(UPLOAD_FOLDER_PLAYLIST_COVERS, exist_ok=True)
 
 # Proverqvame dali razshirenieto na faila e pozvoleno
 def allowed_file(filename, allowed_extensions):
@@ -44,6 +46,18 @@ def load_database():
 # zapisvane na bazata danni v JSON fail
 def save_database(database):
     with open(DATABASE_FILE, 'w') as f:# otvarqme faila za zapisvane
+        json.dump(database, f, indent=4) # zapisvame bazata danni kato json v faila s otdelenie ot 4 space-a
+
+# Zarejdame playlist bazata danni ot JSON fail
+def load_playlist_database():
+    if os.path.exists(PLAYLIST_FILE): # ako faila sushtestvuva
+        with open(PLAYLIST_FILE, 'r') as f: # da go otvorem za chetene
+            return json.load(f) # da go vurnem kato json obekt
+    return {"playlists": []} # ako ne sushtestvuva, vurni prazna baza danni
+
+# zapisvane na playlist bazata danni v JSON fail
+def save_playlist_database(database):
+    with open(PLAYLIST_FILE, 'w') as f:# otvarqme faila za zapisvane
         json.dump(database, f, indent=4) # zapisvame bazata danni kato json v faila s otdelenie ot 4 space-a
 
 
@@ -293,45 +307,114 @@ def streamSongFfmpeg(song_id):
 #===================
 
 @app.route('/create-playlist', methods=['POST'])
-def CreatPlaylist():
+def CreatePlaylist():
     try:
         timestamp = datetime.now().timestamp() # dobavqme timestamp za unikalnost
         playlist_name = request.form.get('playlist_name') # Vzemame imeto na playlist-a ot formata
         playlist_cover = request.files.get('playlist_cover') # Vzemame cover-a na playlist-a ot formata
 
-        playlist = {
+        # Proverqvame dali imeto e dadeno
+        if not playlist_name:
+            return jsonify({"error": "Playlist name is required."}), 400
+
+        # Zapazvame cover-a ako e daden
+        cover_path = None
+        cover_name = None
+        if playlist_cover and allowed_file(playlist_cover.filename, ALLOWED_COVER_EXTENSIONS):
+            cover_name = secure_filename(f"{timestamp}_{playlist_cover.filename}")
+            cover_path = os.path.join(UPLOAD_FOLDER_PLAYLIST_COVERS, cover_name)
+            playlist_cover.save(cover_path)
+
+        # Sazdavame nov playlist obekt
+        new_playlist = {
             "id": timestamp,
-            "name": playlist_name if playlist_name else "My Playlist", # Ako ne e dadeno ime, da se kazva "My Playlist"
-            "cover": playlist_cover,
-            "songs": []} # Sazdavame prazna playlist
-        save_playlist(playlist) # Zapazvame playlist-a
+            "name": playlist_name,
+            "cover_path": cover_path,
+            "cover_name": cover_name,
+            "songs": [],
+            "date_created": datetime.now().isoformat()
+        }
+
+        # Zarejdame i updejtvame bazata danni
+        db = load_playlist_database()
+        db['playlists'].append(new_playlist) # Dobavqme noviq playlist
+        save_playlist_database(db) # Zapazvame bazata danni
+
         return jsonify({ # Vurni uspeshen otgovor
             "success": True,
-            "message": "Playlist created successfully."
+            "message": "Playlist created successfully.",
+            "playlist": new_playlist
         }), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
 
-@app.route('/get-playlist', methods=['GET'])
-def getPlaylist():
+@app.route('/get-playlists', methods=['GET'])
+def getPlaylists():
     try:
-        playlist = load_playlist() # Zarejdame playlist-a
-        return jsonify(playlist), 200 # Vurni playlist-a kato otgovor
+        db = load_playlist_database() # Zarejdame playlist bazata danni
+        return jsonify(db), 200 # Vurni vsichki playlisti kato otgovor
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 
-def load_playlist():
-    if os.path.exists(PLAYLIST_FILE): # ako faila sushtestvuva
-        with open(PLAYLIST_FILE, 'r') as f: # da go otvorem za chetene
-            return json.load(f) # da go vurnem kato json obekt
-    else: 
-        os.makedirs(os.path.dirname(PLAYLIST_FILE), exist_ok=True) # pravim papkata ako ne sushtestvuva
-    return {"playlist": []} # ako ne sushtestvuva, vurni prazna playlist
-def save_playlist(playlist):
-    with open(PLAYLIST_FILE, 'w') as f:# otvarqme faila za zapisvane
-        json.dump(playlist, f, indent=4) # zapisvame playlist-a kato json v faila s otdelenie ot 4 space-a
+@app.route('/get-playlist/<float:playlist_id>', methods=['GET'])
+def getPlaylist(playlist_id):
+    try:
+        db = load_playlist_database() # Zarejdame bazata danni
+        playlist = next((p for p in db['playlists'] if p['id'] == playlist_id), None) # Namirame playlist-a s dadenoto ID
+        if not playlist:
+            return jsonify({"error": "Playlist not found."}), 404
+        return jsonify(playlist), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/delete-playlist/<float:playlist_id>', methods=['DELETE'])
+def deletePlaylist(playlist_id):
+    try:
+        db = load_playlist_database() # Zarejdame bazata danni
+        playlist = next((p for p in db['playlists'] if p['id'] == playlist_id), None) # Namirame playlist-a
+        if not playlist:
+            return jsonify({"error": "Playlist not found."}), 404
+        # Iztrivame cover-a ako sushtestvuva
+        if playlist.get('cover_path') and os.path.exists(playlist['cover_path']):
+            os.remove(playlist['cover_path'])
+        # Iztrivame playlist-a ot bazata danni
+        db['playlists'] = [p for p in db['playlists'] if p['id'] != playlist_id]
+        save_playlist_database(db)
+        return jsonify({
+            "success": True,
+            "message": "Playlist deleted successfully."
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/add-song-to-playlist/<float:playlist_id>', methods=['POST'])
+def addSongToPlaylist(playlist_id):
+    try:
+        song_id = request.json.get('song_id') # Vzemame ID-to na pesenta
+        if not song_id:
+            return jsonify({"error": "Song ID is required."}), 400
+        
+        db = load_playlist_database()
+        playlist = next((p for p in db['playlists'] if p['id'] == playlist_id), None)
+        if not playlist:
+            return jsonify({"error": "Playlist not found."}), 404
+        
+        # Proverqvame dali pesenta veche e v playlist-a
+        if song_id in playlist['songs']:
+            return jsonify({"error": "Song already in playlist."}), 400
+        
+        playlist['songs'].append(song_id)
+        save_playlist_database(db)
+        return jsonify({
+            "success": True,
+            "message": "Song added to playlist successfully."
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # Pravim route za dobavqne na pesen kum playlist-a
 @app.route('/add-to-playlist/<float:song_id>', methods=['POST'])
@@ -343,7 +426,7 @@ def addToPlaylist(song_id):
         if not song: # Ako pesenta ne e namerena
             return jsonify({"error": "Song not found."}), 404
         
-        playlist = load_playlist() # Zarejdame playlist-a
+        playlist = load_playlist_database() # Zarejdame playlist-a
         if any(s['id'] == song_id for s in playlist['playlist']): # Proverqvame dali pesenta veche e v playlist-a
             return jsonify({"error": "Song already in playlist."}), 400
 
@@ -351,7 +434,7 @@ def addToPlaylist(song_id):
        
         
         playlist['songs'].append(song) # Dobavqme pesenta kum playlist-a
-        save_playlist(playlist) # Zapazvame playlist-a
+        save_playlist_database(playlist) # Zapazvame playlist-a
         
         return jsonify({ # Vurni uspeshen otgovor
             "success": True,
@@ -361,6 +444,15 @@ def addToPlaylist(song_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+
+
+# Servirame playlist cover po ime
+@app.route('/playlist-cover/<filename>', methods=['GET'])
+def getPlaylistCover(filename):
+    try:
+        return send_from_directory(UPLOAD_FOLDER_PLAYLIST_COVERS, filename)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404
 
 
 # Startirame Flask servera

@@ -8,6 +8,7 @@ import Home from "./pages/home.jsx";
 import Sidenav from "./components/utils/sidenav.jsx";
 import MiniPlayer from "./components/utils/mini_player.jsx";
 import { AudioPlayerProvider } from "./contexts/AudioPlayerContext.jsx";
+import { Playlists } from "./pages/Playlists.jsx";
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
           <div className="app-content">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/playlists" element={<div>Playlists</div>} />
+              <Route path="/playlists" element={<Playlists />} />
               <Route path="/songs" element={<SongList />} />
               <Route path="/settings" element={<div>Settings</div>} />
               <Route path="/add-song" element={<AddForm />} />
