@@ -33,15 +33,12 @@ export const Playlists = () => {
             });
             const data = await response.json();
             if (response.ok) {
-                alert("Song added to playlist!");
                 fetchPlaylists(); // Refresh playlists to show updated song count
             } else {
                 console.error(data.error);
-                alert("Failed to add song to playlist.");
             }
         } catch (error) {
             console.error(error);
-            alert("An error occurred. Please try again.");
         }
     };
     // Delete playlist

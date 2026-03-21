@@ -5,6 +5,7 @@
     margin: -20px auto;
     flex-direction: column;
     padding: 20px;
+    padding-bottom: 150px;
     background-color: var(--background-color);
     font-family: var(--font-family);
     height: max-content;
@@ -36,6 +37,10 @@ ul {
         display: flex;
     }
     .delete-button {
+        display: flex;
+        transition: all 0.3s ease;
+    }
+    .Btn {
         display: flex;
         transition: all 0.3s ease;
     }
@@ -95,7 +100,72 @@ ul {
     margin-top: 5px;
     transition: all 0.3s ease;
 }
+/* Add to playlist button */
+.Btn {
+  margin-top: 11px;  
+  display: none;
+  align-items: center;
+  justify-content: flex-start;
+  width: 35px;
+  height: 35px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition-duration: .3s;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+  background: var(--border-color);
+}
 
+/* plus sign */
+.sign {
+  width: 100%;
+  font-size: 2em;
+  color: var(--text-color);
+  transition-duration: .3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* text */
+.text {
+  position: absolute;
+  display: none;
+  right: 0%;
+  left: 35px;
+  width: 0%;
+  opacity: 0;
+  color: white;
+  font-size: 1.2em;
+  font-weight: 500;
+  transition-duration: .3s;
+}
+/* hover effect on button width */
+.Btn:hover {
+  width: 175px;
+  border-radius: 20px;
+  transition-duration: .3s;
+}
+
+.Btn:hover .sign {
+  width: 30%;
+  transition-duration: .3s;
+
+}
+/* hover effect button's text */
+.Btn:hover .text {
+  display: inline;
+  opacity: 1;
+  width: 70%;
+  transition-duration: .3s;
+  padding-right: 20px;
+  white-space: nowrap;
+}
+/* button click effect*/
+.Btn:active {
+  transform: translate(2px ,2px);
+}
 .artist {
     font-weight: 600;
     color: var(--secondory-text-color);
@@ -111,4 +181,65 @@ ul {
 .duration {
     color: var(--text-color);
     position: relative;
+}
+/* Modal styles */
+.playlist-options {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+.modal-info {
+    display: flex;
+    gap: 10px;
+}
+.playlist-option-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+    background: var(--border-color);
+    border: none;
+    color: var(--text-color);
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    img {
+        width: 70px;
+        height: 70px;
+        margin-right: 10px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+}
+.playlist-option-btn:hover {
+    background: var(--secondory-text-color);
+    .modal-continue{
+    background: var(--orange-dark);
+  border: 1px solid var(--orange);
+  transition: all 0.3s ease;
+}
+.modal-continue>svg {
+    transform: translateX(5px);
+    transition: all 0.3s ease;
+  }
+}
+
+.modal-continue {
+  font-weight: 700;
+  transition: all 0.2s;
+  padding: 5px 15px;
+  border-radius: 100px;
+  background: var(--secondory-text-color);
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+}
+.modal-continue>svg {
+    width: 34px;
+  margin-left: 10px;
+  transition: transform 0.3s ease-in-out;
 }
