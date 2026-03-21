@@ -7,7 +7,7 @@
     padding: 20px;
     background-color: var(--background-color);
     font-family: var(--font-family);
-    height: 100vh;
+    height: max-content;
 
     h2 {
         text-align: center;
@@ -34,6 +34,10 @@ ul {
     background-color: var(--hover-color);
     .play-button {
         display: flex;
+    }
+    .delete-button {
+        display: flex;
+        transition: all 0.3s ease;
     }
 }
 .song-details {
@@ -85,11 +89,13 @@ ul {
     width: 45px;
     height: 45px;
     transition: all 0.3s ease;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     margin-top: 5px;
+    transition: all 0.3s ease;
 }
+
 .artist {
     font-weight: 600;
     color: var(--secondory-text-color);

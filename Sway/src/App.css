@@ -24,6 +24,7 @@ body {
   padding: 0;
   box-sizing: border-box;
   font-family: var(--title-font-family);
+  background: var(--background-color);
  
 
 }
@@ -37,6 +38,6 @@ body {
 .app-content {
   margin-left: calc(var(--sidenav-width) + 20px);
   width: 100%;
-  min-height: 100vh;
+  min-height: 110vh;
 }
 
