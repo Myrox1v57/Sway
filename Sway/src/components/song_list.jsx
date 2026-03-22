@@ -83,7 +83,7 @@ const SongList = () => {
 
   return (
     <div className="song-list">
-      <h2>Songs</h2>
+      <h1>Songs</h1>
         <ul>
         {songs.map((song) => (
             <li key={song.id} className="song-item">
@@ -127,22 +127,13 @@ const SongList = () => {
             <Modal_Add_Song isOpen={showModal} onClose={() => setShowModal(false)}>
                 <h3>Add to Playlist</h3>
                 <div className="playlist-options">
-                    {playlists.length === 0 ? (
-                        <p>No playlists available. Create one first!</p>
-                    ) : (
+                    {playlists.length === 0 ? (<p>No playlists available</p>)
+                     : (
                         playlists.map((playlist) => (
-                            <button 
-                                key={playlist.id}
-                                className="playlist-option-btn"
-                                onClick={() => addSongToPlaylist(playlist.id)}
-                            >
+                            <button key={playlist.id} className="playlist-option-btn"onClick={() => addSongToPlaylist(playlist.id)}>
                                 <div className="modal-info">
                                     {playlist.cover_path && (
-                                    <img 
-                                        src={`http://localhost:8000/playlist-cover/${playlist.cover_name}`}
-                                        alt={`${playlist.name} cover`}
-                                        className="playlist-cover"
-                                    />
+                                    <img src={`http://localhost:8000/playlist-cover/${playlist.cover_name}`} alt={`${playlist.name} cover`} className="playlist-cover"/>
                                 )}
                                 <h2>{playlist.name}</h2>
                                 </div>

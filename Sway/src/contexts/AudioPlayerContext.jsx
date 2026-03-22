@@ -294,6 +294,20 @@ export const AudioPlayerProvider = ({ children }) => {
             setVolume(0); // Postavqme volume na 0, kogato mutvame
         }
     };
+        const playCurrentPlaylist = (playlist) => {
+        if (playlist.songs && playlist.songs.length > 0) {
+            const playlistSongs = songs.filter(song => playlist.songs.includes(song.id));
+            if (playlistSongs.length > 0) {
+                setOriginalSongs(songs); // Zapazvame originalniq red na pesnite
+                setSongs(playlistSongs); // Aktualizirame spisuka s pesnite ot playlistata
+                playSong(playlistSongs[0].id); // Puskame purvata pesen ot playlistata
+            } else {
+                alert("No songs from this playlist are available.");
+            }
+        } else {
+            alert("This playlist is empty.");
+        }
+    };
 
     const value = {
         songs,
@@ -314,7 +328,8 @@ export const AudioPlayerProvider = ({ children }) => {
         refreshSongs,
         seekToTime,
         setSongs,
-        toggleShuffle
+        toggleShuffle,
+        playCurrentPlaylist
     };
 
     return (

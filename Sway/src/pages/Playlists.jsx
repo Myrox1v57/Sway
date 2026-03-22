@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../component_styles/playlists.css";
+import { useAudioPlayer } from "../contexts/AudioPlayerContext";
 
 export const Playlists = () => {
     const [playlists, setPlaylists] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const {playCurrentPlaylist } = useAudioPlayer();
     // Fetch playlists from backend
     const fetchPlaylists = async () => {
         try {
@@ -77,18 +78,22 @@ export const Playlists = () => {
 
             {playlists.length === 0 ? (
                 <div className="no-playlists">
-                    <p>No playlists yet. Create your first playlist!</p>
+                    <p>No playlists yet.</p>
                 </div>) : (
                 <div className="playlists-grid">
                     {playlists.map((playlist) => (
                         <div key={playlist.id} className="playlist-card">
+                            <button className="playlist-play-btn" onClick={() => playCurrentPlaylist(playlist)}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-play"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 4v16l13 -8z" /></svg>
+                            </button>
                             <Link to={`/playlist/${playlist.id}`} className="playlist-link">
                             
                                 <div className="playlist-cover">
+                                    
                                     {playlist.cover_path ? (
                                         <img src={`http://localhost:8000/playlist-cover/${playlist.cover_name}`} alt={playlist.name}/>
                                     ) : (
-                                        <div className="default-cover">🎵</div>
+                                        <div className="default-cover"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-playlist"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11 17a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M17 17v-13h4" /><path d="M13 5h-10" /><path d="M3 9l10 0" /><path d="M9 13h-6" /></svg></div>
                                     )}
                                 </div>
                                 <div className="playlist-info">
