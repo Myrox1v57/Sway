@@ -20,7 +20,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-right: 1px solid var(--border-color);
+  border-right: 2px solid var(--sidenav-border-color);
   padding: 1rem;
   z-index: 1000;
   position: fixed;

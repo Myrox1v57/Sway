@@ -1,5 +1,7 @@
 .playlists-page {
     padding: 30px;
+    margin: 0 auto;
+
 }
 .playlists-header {
     margin: 20px 0;
@@ -24,15 +26,17 @@
 .playlist-card {
     display: flex;
     flex-direction: column;
-    background: var(--playlist-card-bg-color);
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
     transition: all 0.3s ease;
+    padding: 10px;
+    padding-bottom: 20px;
 }
 .playlist-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
+    background: var(--playlist-card-bg-color);
     .playlist-play-btn {
         display: inline;
     }
@@ -66,10 +70,12 @@
     } 
 }
 .playlist-info {
-    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0 10px 0;
     h3 {
         font-size: 18px;
-        margin: 0 0 10px 0;
         color: var(--text-color);
         white-space: nowrap;
         overflow: hidden;
@@ -79,32 +85,37 @@
     p {
         font-size: 14px;
         color: var(--secondory-text-color);
-        margin: 0;
     }
 }
 .playlist-card .delete-btn {
-    margin: 0 12px 12px 12px;
-    padding: 8px;
-    color: white;
+    background: var(--text-color);
     border: none;
-    border-radius: 4px;
+    color: black;
+    border: var(--border-color) 1px solid;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+    padding: 10px 10px;
+    border-radius: 8px;
     cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    font-weight: 600;
 }
 .playlist-card .delete-btn:hover {
-    opacity: 0.9;
+    background: var(--orange-dark);
+    transition: all 0.2s ease;
 }
 .playlist-play-btn {
     position: absolute;
-    bottom: 130px;
-    right: 5px;
+    bottom: 120px;
+    right: 10px;
     background: var(--orange-dark);
-    opacity: 0.8;
+    opacity: 1;
     border: none;
     display: none;
     color: black;
     border: var(--background-color) 2px solid;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
-    padding: 15px 15px;
+    padding: 20px 20px;
     border-radius: 50%;
     cursor: pointer;
     font-size: 20px;
