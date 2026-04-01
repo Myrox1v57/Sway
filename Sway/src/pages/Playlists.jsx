@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../component_styles/playlists.css";
 import { useAudioPlayer } from "../contexts/AudioPlayerContext";
+import Modal_Remove_Playlist from "../components/utils/Modal_Remove_Playlist";
 
 export const Playlists = () => {
     const [playlists, setPlaylists] = useState([]);
     const [loading, setLoading] = useState(true);
     const {playCurrentPlaylist } = useAudioPlayer();
-    // Fetch playlists from backend
+    const [showModal, SetShowModal] = useState(false);
+
     const fetchPlaylists = async () => {
         try {
             const response = await fetch("http://localhost:8000/get-playlists");
@@ -34,7 +36,7 @@ export const Playlists = () => {
             });
             const data = await response.json();
             if (response.ok) {
-                fetchPlaylists(); // Refresh playlists to show updated song count
+                fetchPlaylists(); 
             } else {
                 console.error(data.error);
             }
@@ -42,10 +44,8 @@ export const Playlists = () => {
             console.error(error);
         }
     };
-    // Delete playlist
+
     const handleDelete = async (playlistId) => {
-        if (!confirm("Are you sure you want to delete this playlist?")) return;
-        
         try {
             const response = await fetch(`http://localhost:8000/delete-playlist/${playlistId}`, {
                 method: "DELETE"
@@ -59,6 +59,9 @@ export const Playlists = () => {
         } catch (error) {
             console.error(error);
         }
+    };
+    const handleDeletePlaylistModal = (playlistId) => {
+        SetShowModal(true);
     };
 
     useEffect(() => {
@@ -101,7 +104,20 @@ export const Playlists = () => {
                                     <p>{playlist.songs?.length || 0} songs</p>
                                 </div>
                             </Link>
-                            <button className="delete-btn" onClick={(e) => { e.preventDefault(); handleDelete(playlist.id); }}>Delete</button>
+                            <button className="delete-btn" onClick={() => handleDeletePlaylistModal()}>Delete</button>
+                            {showModal && (
+                                <Modal_Remove_Playlist isOpen={showModal} onClose={()=> SetShowModal(false)}>
+                                    <div className="modal-content-delete">
+                                        <h3>Are you sure you want to delete?</h3>
+                                        <div className="modal-buttons">
+                                            <button className="confirm-btn" onClick={() => { handleDelete(playlist.id); SetShowModal(false); }}>Yes</button>
+                                            <button className="cancel-btn" onClick={() => SetShowModal(false)}>Cancel</button>
+                                        </div>
+                                    </div>
+
+                                </Modal_Remove_Playlist>
+
+                            )}
                         </div>
                     ))}
                 </div>

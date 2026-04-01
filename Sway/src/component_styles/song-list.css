@@ -10,7 +10,7 @@
     font-family: var(--font-family);
     height: max-content;
 
-    h2 {
+    h1 {
         text-align: center;
         color: var(--text-color);
     }
@@ -51,8 +51,8 @@ ul {
     gap: 5px;
 }
 .cover-image {
-  width: 50px;
-  height: 50px;
+  width: 70px;
+  height: 70px;
   object-fit: cover;
 }
 .controls {
@@ -68,8 +68,8 @@ ul {
     border-radius: 100%;
     cursor: pointer;
     font-size: 11px;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
