@@ -13,12 +13,13 @@
   --item-bg-color: #cac7c7;
   --text-color: #dadada;
   --secondory-text-color: #595959;
+  --thirdary-text-color: #888;
   --background-color: linear-gradient(150deg, #1a1a1a , #0d0d0d);
   --orange: #EC4C01;
   --orange-dark: #DB4600;
   --orange-darkest: #E25C00;
   --orange-light: #EC7620;
-  --playlist-detail-bg-color: linear-gradient(135deg, var(--orange-dark) ,  var(--orange-light) , var(--orange-darkest));
+  --playlist-detail-bg-color: linear-gradient(135deg, rgba(153, 49, 0, 0.8) 0%, #a3461a, #1d1d1d 100%);;
   --form-background-color: #3b3b3b;
   --upload-area-bg-color: #2b2b2b;
   --modal-overlay-bg-color: #171717;
