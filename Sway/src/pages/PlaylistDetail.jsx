@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAudioPlayer } from "../contexts/AudioPlayerContext";
 import "../component_styles/playlist_detail.css";
+import "../component_styles/song-list.css";
 
 export const PlaylistDetail = () => {
     const { id } = useParams();
     const [playlist, setPlaylist] = useState(null);
     const [songs, setSongs] = useState([]);
     const [loading, setLoading] = useState(true);
+    const {playCurrentPlaylist } = useAudioPlayer();
     const { togglePlayPause, currentSong, isPlaying } = useAudioPlayer();
 
     useEffect(() => {
@@ -92,8 +94,14 @@ export const PlaylistDetail = () => {
                         )}
                     </div>
                     <div className="playlist-detail-text">
-                        <h1>{playlist.name}</h1>
+                        <div className="playlist-name-row">
+                            <h1>{playlist.name}</h1>
+                            <button className="playlist-detail-play-btn" onClick={() => playCurrentPlaylist(playlist)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 4v16l13 -8z" /></svg>
+                            </button>
+                        </div>
                         <p>{songs.length} songs</p>
+                        
                     </div>
                 </div>
             </div>
@@ -104,47 +112,50 @@ export const PlaylistDetail = () => {
                         <p>No songs in this playlist yet.</p>
                     </div>
                 ) : (
-                    <div className="song-list">
-                        {songs.map((song, index) => (
-                            <div 
-                                key={song.id} 
-                                className={`song-item ${currentSong?.id === song.id ? 'playing' : ''}`}
+                    <ul>
+                        {songs.map((song) => (
+                            <li
+                                key={song.id}
+                                className={`song-item ${currentSong?.id === song.id ? 'selected-song' : ''}`}
                             >
-                                <span className="song-index">{index + 1}</span>
-                                <img 
-                                    src={`../../src-backend/${song.cover_path}`} 
-                                    alt={song.title}
-                                    className="song-cover"
-                                />
-                                <div className="song-info">
-                                    <h4>{song.title}</h4>
-                                    <p>{song.artist}</p>
+                                <div className="controls">
+                                    <button
+                                        className="play-button"
+                                        onClick={() => togglePlayPause(song.id)}
+                                    >
+                                        {currentSong?.id === song.id && isPlaying ? (
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000ff"><path d="M320-240v-480h80v480h-80Zm240 0v-480h80v480h-80Z"/></svg>
+                                        ) : (
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000ff"><path d="M320-240v-480l360 240-360 240Zm80-240Zm0 90 136-90-136-90v180Z"/></svg>
+                                        )}
+                                    </button>
+                                    <img
+                                        src={`../../src-backend/${song.cover_path}`}
+                                        alt={song.title}
+                                        className="cover-image"
+                                    />
                                 </div>
-                                <span className="song-duration">
-                                    {Math.floor(song.duration / 60)}:{("0" + Math.floor(song.duration % 60)).slice(-2)}
-                                </span>
-                                <button 
-                                    className="play-btn"
-                                    onClick={() => togglePlayPause(song.id)}
-                                >
-                                    {currentSong?.id === song.id && isPlaying ? (
-                                         <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000ff"><path d="M320-240v-480h80v480h-80Zm240 0v-480h80v480h-80Z"/></svg> 
-                                    ) : (
-                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-play"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 4v16l13 -8z" /></svg>
-                                    )}
-                                </button>
-                                <button 
-                                    className="remove-btn"
-                                    onClick={() => removeSongFromPlaylist(song.id)}
-                                    title="Remove from playlist"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
-                                        <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
-                                    </svg>
-                                </button>
-                            </div>
+                                <div className="song-details">
+                                    <p className="separator">-</p>
+                                    <p className="artist">{song.artist}</p>
+                                    <p className="separator">·</p>
+                                    <p className="title">{song.title}</p>
+                                    <button
+                                        className="delete-button"
+                                        onClick={() => removeSongFromPlaylist(song.id)}
+                                        title="Remove from playlist"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                                            <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+                                        </svg>
+                                    </button>
+                                    <p className="duration">
+                                        {Math.floor(song.duration / 60)}:{("0" + Math.floor(song.duration % 60)).slice(-2)}
+                                    </p>
+                                </div>
+                            </li>
                         ))}
-                    </div>
+                    </ul>
                 )}
             </div>
         </div>

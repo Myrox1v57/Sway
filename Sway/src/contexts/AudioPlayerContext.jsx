@@ -302,10 +302,10 @@ export const AudioPlayerProvider = ({ children }) => {
                 setSongs(playlistSongs); // Aktualizirame spisuka s pesnite ot playlistata
                 playSong(playlistSongs[0].id); // Puskame purvata pesen ot playlistata
             } else {
-                alert("No songs from this playlist are available.");
+                stop(); // Ako nqkoi pesni ot playlistata ne sa dostupni, spirame igraneto
             }
         } else {
-            alert("This playlist is empty.");
+            alert("This playlist has no songs!"); // Ako playlistata nqma pesni, pokazvame alert
         }
     };
 

@@ -80,6 +80,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        text-transform: capitalize;
 
     }
     p {
@@ -108,13 +109,13 @@
     position: absolute;
     bottom: 120px;
     right: 10px;
-    background: var(--orange-dark);
+    background: var(--orange-darkest);
     opacity: 1;
     border: none;
     display: none;
     color: black;
     border: var(--background-color) 2px solid;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 4px 10px 10px rgba(0, 0, 0, 0.6);
     padding: 20px 20px;
     border-radius: 50%;
     cursor: pointer;
@@ -122,4 +123,8 @@
     transition: all 0.3s ease;
     align-items: center;
     justify-content: center;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+.selected-song {
+    background: var(--hover-color);
 }

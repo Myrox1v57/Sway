@@ -14,9 +14,11 @@
   --text-color: #dadada;
   --secondory-text-color: #595959;
   --background-color: linear-gradient(150deg, #1a1a1a , #0d0d0d);
-  --orange: #fd591b;
-  --orange-dark: #e04e17;
-  --orange-darkest: #f05913;
+  --orange: #EC4C01;
+  --orange-dark: #DB4600;
+  --orange-darkest: #E25C00;
+  --orange-light: #EC7620;
+  --playlist-detail-bg-color: linear-gradient(135deg, var(--orange-dark) ,  var(--orange-light) , var(--orange-darkest));
   --form-background-color: #3b3b3b;
   --upload-area-bg-color: #2b2b2b;
   --modal-overlay-bg-color: #171717;
@@ -28,8 +30,7 @@ body {
   padding: 0;
   box-sizing: border-box;
   font-family: var(--title-font-family);
-  background: #171717;
- 
+  background: #171717;  
 
 }
 .App {

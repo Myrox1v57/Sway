@@ -228,5 +228,4 @@
 /* Add padding to body to prevent content from being hidden behind mini player */
 body {
     padding-bottom: 80px;
-    background-color: var(--background-color);
 }
