@@ -1,7 +1,7 @@
 .song-list {
-    width: min(1100px, 100%);
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 30px 0 150px;
+	padding: 40px;
     font-family: var(--font-family);
 }
 
