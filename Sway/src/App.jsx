@@ -23,7 +23,6 @@ function App() {
               <Route path="/playlists" element={<Playlists />} />
               <Route path="/playlist/:id" element={<PlaylistDetail />} />
               <Route path="/songs" element={<SongList />} />
-              <Route path="/settings" element={<div>Settings</div>} />
               <Route path="/add-song" element={<AddForm />} />
             </Routes>
             <MiniPlayer />

@@ -9,8 +9,8 @@ export const PlaylistDetail = () => {
     const [playlist, setPlaylist] = useState(null);
     const [songs, setSongs] = useState([]);
     const [loading, setLoading] = useState(true);
-    const {playCurrentPlaylist } = useAudioPlayer();
-    const { togglePlayPause, currentSong, isPlaying } = useAudioPlayer();
+    const [openMenuSongId, setOpenMenuSongId] = useState(null);
+    const { playCurrentPlaylist, togglePlayPause, currentSong, isPlaying } = useAudioPlayer();
 
     useEffect(() => {
         const fetchPlaylistDetails = async () => {
@@ -57,10 +57,18 @@ export const PlaylistDetail = () => {
             });
             if (response.ok) {
                 setSongs(songs.filter(song => song.id !== songId));
+                setOpenMenuSongId(null);
             }
         } catch (error) {
             console.error(error);
         }
+    };
+
+    const formatSongDuration = (durationInSeconds) => {
+        const safeDuration = Math.max(0, Number(durationInSeconds) || 0);
+        const minutes = Math.floor(safeDuration / 60);
+        const seconds = Math.floor(safeDuration % 60);
+        return `${minutes}:${String(seconds).padStart(2, "0")}`;
     };
 
     if (loading) {
@@ -114,50 +122,62 @@ export const PlaylistDetail = () => {
                         <p>No songs in this playlist yet.</p>
                     </div>
                 ) : (
-                    <ul>
+                    <div className="songs-container" onClick={() => setOpenMenuSongId(null)}>
                         {songs.map((song) => (
-                            <li
+                            <article
                                 key={song.id}
-                                className={`song-item ${currentSong?.id === song.id ? 'selected-song' : ''}`}
+                                className={`song-item${currentSong?.id === song.id ? " selected-song" : ""}`}
                             >
-                                <div className="controls">
-                                    <button
-                                        className="play-button"
-                                        onClick={() => togglePlayPause(song.id)}
-                                    >
-                                        {currentSong?.id === song.id && isPlaying ? (
-                                            <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000ff"><path d="M320-240v-480h80v480h-80Zm240 0v-480h80v480h-80Z"/></svg>
-                                        ) : (
-                                            <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000ff"><path d="M320-240v-480l360 240-360 240Zm80-240Zm0 90 136-90-136-90v180Z"/></svg>
-                                        )}
-                                    </button>
+                                <div className="song-main">
                                     <img
                                         src={`../../src-backend/${song.cover_path}`}
                                         alt={song.title}
                                         className="cover-image"
                                     />
+                                    <div className="song-details">
+                                        <p className="title">{song.title}</p>
+                                        <p className="artist">{song.artist}</p>
+                                    </div>
                                 </div>
-                                <div className="song-details">
-                                    <p className="separator">-</p>
-                                    <p className="artist">{song.artist}</p>
-                                    <p className="separator">·</p>
-                                    <p className="title">{song.title}</p>
+
+                                <div className="song-actions">
+                                    <p className="duration">{formatSongDuration(song.duration)}</p>
+
                                     <button
-                                        className="delete-button"
-                                        onClick={() => removeSongFromPlaylist(song.id)}
-                                        title="Remove from playlist"
+                                        type="button"
+                                        className="play-button"
+                                        onClick={() => togglePlayPause(song.id)}
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
-                                            <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
-                                        </svg>
+                                        {currentSong?.id === song.id && isPlaying ? "Pause" : "Play"}
                                     </button>
-                                    <p className="duration">
-                                        {Math.floor(song.duration / 60)}:{("0" + Math.floor(song.duration % 60)).slice(-2)}
-                                    </p>
+
+                                    <div className="song-menu-wrap" onClick={(e) => e.stopPropagation()}>
+                                        <button
+                                            type="button"
+                                            className="song-menu-toggle"
+                                            onClick={() => setOpenMenuSongId((prev) => (prev === song.id ? null : song.id))}
+                                            aria-label="Open song actions"
+                                        >
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </button>
+
+                                        {openMenuSongId === song.id && (
+                                            <div className="song-menu-dropdown">
+                                                <button
+                                                    className="song-menu-item danger"
+                                                    onClick={() => removeSongFromPlaylist(song.id)}
+                                                >
+                                                    Remove from Playlist
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                            </li>
+                            </article>
                         ))}
-                    </ul>
+                    </div>
                 )}
             </div>
         </div>

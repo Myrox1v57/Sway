@@ -1,0 +1,257 @@
+.add-playlist-form {
+	width: 100%;
+	min-height: 100vh;
+	padding: 48px 64px;
+	background: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 100%);
+	font-family: var(--font-family);
+	box-sizing: border-box;
+}
+
+.form-header {
+	text-align: center;
+	margin-bottom: 32px;
+}
+
+.form-header h2 {
+	color: var(--text-color);
+	font-size: 1.75rem;
+	font-weight: 600;
+	margin: 0 0 8px 0;
+}
+
+.form-content {
+	display: flex;
+	flex-direction: column;
+	gap: 28px;
+}
+
+.form-section {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.section-title {
+	color: var(--text-color);
+	font-size: 0.85rem;
+	font-weight: 500;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin: 0;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #2a2a2a;
+}
+
+.inputs-container {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.SongInput {
+	position: relative;
+	width: 100%;
+}
+
+.SongInput input {
+	width: 100%;
+	padding: 16px 20px;
+	outline: none;
+	background: #151515;
+	border-radius: 10px;
+	color: var(--text-color);
+	border: 1px solid #2a2a2a;
+	font-size: 1rem;
+	transition: all 0.2s ease;
+	box-sizing: border-box;
+}
+
+.SongInput input:hover {
+	border-color: #3a3a3a;
+}
+
+.SongInput input:focus {
+	border-color: var(--border-color);
+	box-shadow: 0 0 0 3px rgba(253, 89, 27, 0.4);
+}
+
+.SongInput input::placeholder {
+	color: #555;
+}
+
+.SongInput span {
+	position: absolute;
+	left: 12px;
+	top: 0;
+	font-size: 0.7rem;
+	transform: translateY(-50%);
+	padding: 2px 8px;
+	border-radius: 4px;
+	background: #1a1a1a;
+	letter-spacing: 0.5px;
+	color: #888;
+	font-weight: 500;
+}
+
+.upload-container {
+	display: flex;
+	gap: 20px;
+	justify-content: center;
+}
+
+.single-upload-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.upload-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+}
+
+.upload-label {
+	color: #888;
+	font-size: 0.8rem;
+	font-weight: 500;
+}
+
+.custum-file-upload {
+	position: relative;
+	height: 300px;
+	width: 300px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	cursor: pointer;
+	border: 2px dashed #3a3a3a;
+	background: #151515;
+	padding: 1rem;
+	border-radius: 12px;
+	transition: all 0.2s ease;
+	box-sizing: border-box;
+}
+
+.custum-file-upload:hover {
+	border-color: var(--border-color);
+	background: #1a1a1a;
+}
+
+.custum-file-upload .icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.custum-file-upload .icon svg {
+	height: 48px;
+	width: 48px;
+	color: var(--orange);
+	stroke: var(--orange);
+	fill: none;
+	opacity: 0.8;
+}
+
+.custum-file-upload .text {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 2;
+}
+
+.custum-file-upload .text span {
+	font-weight: 400;
+	color: #666;
+	font-size: 0.75rem;
+	text-align: center;
+	max-width: 120px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.custum-file-upload input {
+	display: none;
+}
+
+.cover-preview {
+	position: absolute;
+	inset: 4px;
+	width: calc(100% - 8px);
+	height: calc(100% - 8px);
+	border-radius: 8px;
+	object-fit: cover;
+	z-index: 100;
+}
+
+.playlist-upload .icon,
+.playlist-upload .text {
+	position: relative;
+	z-index: 2;
+}
+
+.form-actions {
+	margin-top: 32px;
+	display: flex;
+	justify-content: center;
+}
+
+.submit-button {
+	width: 100%;
+	padding: 16px 32px;
+	font-size: 1rem;
+	font-weight: 600;
+	color: #fff;
+	background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%);
+	border: none;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
+
+.submit-button:hover:not(:disabled) {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 25px rgba(253, 89, 27, 0.4);
+}
+
+.submit-button:active:not(:disabled) {
+	transform: translateY(0);
+}
+
+.submit-button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.spinner {
+	width: 18px;
+	height: 18px;
+	border: 2px solid rgba(255, 255, 255, 0.3);
+	border-top-color: #fff;
+	border-radius: 50%;
+	animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (max-width: 768px) {
+	.add-playlist-form {
+		padding: 32px 24px;
+	}
+
+	.single-upload-container {
+		justify-content: center;
+	}
+}
